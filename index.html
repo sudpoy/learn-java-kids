@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn Java for Kids! 🚀</title>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    :root {
+      --orange: #FF6B35;
+      --blue: #3A86FF;
+      --green: #06D6A0;
+      --purple: #8338EC;
+      --yellow: #FFD166;
+      --pink: #EF476F;
+      --dark: #1E1E2E;
+      --light: #F8F9FA;
+      --card-bg: #FFFFFF;
+      --text: #2D3142;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--light);
+      color: var(--text);
+      scroll-behavior: smooth;
+    }
+    /* Progress bar */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 4px;
+      background: linear-gradient(90deg, var(--orange), var(--pink));
+      width: 0%; z-index: 1000; transition: width 0.1s;
+    }
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--dark); color: white;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 24px; flex-wrap: wrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    nav .logo { font-size: 1.4rem; font-weight: 800; margin-right: auto; }
+    nav a {
+      color: #ccc; text-decoration: none; font-size: 0.85rem;
+      padding: 6px 12px; border-radius: 20px; transition: all 0.2s;
+    }
+    nav a:hover { color: white; background: rgba(255,255,255,0.15); }
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #3A0068 100%);
+      color: white; text-align: center; padding: 80px 24px 60px;
+    }
+    .hero .emoji { font-size: 4rem; display: block; margin-bottom: 16px; }
+    .hero h1 { font-size: 2.8rem; font-weight: 900; margin-bottom: 12px; }
+    .hero h1 span { color: var(--yellow); }
+    .hero p { font-size: 1.2rem; opacity: 0.85; max-width: 560px; margin: 0 auto 28px; }
+    .hero .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .badge {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem;
+    }
+    /* Sections */
+    .section {
+      max-width: 900px; margin: 0 auto; padding: 60px 24px;
+    }
+    .section-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+    }
+    .section-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    h2 { font-size: 1.8rem; font-weight: 800; }
+    .divider {
+      border: none; height: 3px; border-radius: 2px; margin: 0 24px;
+    }
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px; padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+    }
+    .card h3 { font-size: 1.1rem; margin-bottom: 10px; }
+    .card p, .card li { line-height: 1.7; color: #555; }
+    .card ul { padding-left: 20px; }
+    /* Code blocks */
+    pre { border-radius: 12px; margin: 16px 0; font-size: 0.9rem; }
+    code.inline {
+      background: #F0F0F5; color: var(--purple);
+      padding: 2px 8px; border-radius: 6px; font-size: 0.9em;
+    }
+    /* Output box */
+    .output-box {
+      background: #1a1a2e; color: #00ff99;
+      font-family: monospace; font-size: 0.9rem;
+      padding: 16px 20px; border-radius: 10px; margin-top: 10px;
+    }
+    /* Try-it demos */
+    .demo-box {
+      background: linear-gradient(135deg, #f8f0ff, #fff0f8);
+      border: 2px solid var(--purple); border-radius: 16px;
+      padding: 24px; margin-top: 20px;
+    }
+    .demo-box h4 { font-size: 1rem; color: var(--purple); margin-bottom: 14px; }
+    .demo-box input, .demo-box select {
+      padding: 8px 14px; border: 2px solid #ddd; border-radius: 8px;
+      font-size: 1rem; margin: 6px 4px; outline: none; transition: border 0.2s;
+    }
+    .demo-box input:focus, .demo-box select:focus { border-color: var(--purple); }
+    .demo-btn {
+      background: var(--purple); color: white;
+      border: none; padding: 10px 22px;
+      border-radius: 8px; font-size: 1rem; cursor: pointer;
+      margin: 6px 4px; transition: transform 0.1s, opacity 0.2s;
+    }
+    .demo-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .demo-result {
+      margin-top: 14px; padding: 12px 16px;
+      background: var(--dark); color: #00ff99;
+      font-family: monospace; border-radius: 10px;
+      min-height: 40px; font-size: 0.95rem;
+    }
+    /* Loop visualizer */
+    .loop-vis { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .loop-ball {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: #eee; display: flex; align-items: center;
+      justify-content: center; font-weight: bold; font-size: 1rem;
+      transition: background 0.3s, color 0.3s;
+    }
+    .loop-ball.active { background: var(--orange); color: white; }
+    /* Quiz */
+    .quiz-container { max-width: 700px; margin: 0 auto; }
+    .quiz-question {
+      background: white; border-radius: 16px; padding: 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      display: none;
+    }
+    .quiz-question.active { display: block; }
+    .quiz-question h3 { font-size: 1.15rem; margin-bottom: 18px; }
+    .quiz-options { display: grid; gap: 10px; }
+    .quiz-option {
+      background: #f5f5ff; border: 2px solid transparent;
+      border-radius: 10px; padding: 12px 16px; cursor: pointer;
+      font-size: 0.95rem; transition: all 0.2s; text-align: left;
+    }
+    .quiz-option:hover { background: #ede9ff; border-color: var(--purple); }
+    .quiz-option.correct { background: #d4fce8; border-color: var(--green); color: #0a7a50; }
+    .quiz-option.wrong { background: #fde8ee; border-color: var(--pink); color: #a0123a; }
+    .quiz-feedback { margin-top: 14px; font-size: 0.95rem; min-height: 24px; font-weight: 600; }
+    .quiz-next {
+      display: none; margin-top: 16px;
+      background: var(--blue); color: white;
+      border: none; padding: 12px 28px; border-radius: 10px;
+      font-size: 1rem; cursor: pointer;
+    }
+    .quiz-progress {
+      display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .quiz-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #ddd; transition: background 0.3s;
+    }
+    .quiz-dot.done { background: var(--green); }
+    .quiz-dot.current { background: var(--blue); }
+    /* Score */
+    #score-screen {
+      display: none; text-align: center;
+      background: white; border-radius: 20px; padding: 48px 32px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+    }
+    #score-screen .score-emoji { font-size: 4rem; }
+    #score-screen h2 { font-size: 2rem; margin: 16px 0 8px; }
+    #score-screen p { color: #666; margin-bottom: 20px; }
+    .score-badge {
+      display: inline-block; background: var(--yellow);
+      color: var(--dark); font-size: 1.5rem; font-weight: 900;
+      padding: 12px 32px; border-radius: 50px; margin-bottom: 24px;
+    }
+    .restart-btn {
+      background: var(--orange); color: white;
+      border: none; padding: 14px 32px; border-radius: 12px;
+      font-size: 1rem; cursor: pointer; font-weight: 700;
+    }
+    /* Footer */
+    footer {
+      background: var(--dark); color: #aaa;
+      text-align: center; padding: 32px; font-size: 0.9rem;
+    }
+    footer span { color: var(--orange); }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      nav a { font-size: 0.75rem; padding: 4px 8px; }
+    }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<nav>
+  <span class="logo">☕ Java for Kids</span>
+  <a href="#intro">Intro</a>
+  <a href="#variables">Variables</a>
+  <a href="#loops">Loops</a>
+  <a href="#conditionals">If/Else</a>
+  <a href="#methods">Methods</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="emoji">☕</span>
+  <h1>Learn <span>Java</span> — It's Fun!</h1>
+  <p>Java is one of the world's most popular programming languages. Games, apps, and robots all use it!</p>
+  <div class="badges">
+    <span class="badge">🎮 Make Games</span>
+    <span class="badge">🤖 Power Robots</span>
+    <span class="badge">📱 Build Apps</span>
+    <span class="badge">🌍 Run Everywhere</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section id="intro">
+  <hr class="divider" style="background:linear-gradient(90deg,var(--blue),var(--green));margin-bottom:0">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#EEF4FF">🌍</div>
+      <h2>What is Java?</h2>
+    </div>
+    <div class="card">
+      <p>Java is a <strong>programming language</strong> — a way to give instructions to a computer. When you write Java code, the computer reads it and does exactly what you tell it to!</p>
+      <br/>
+      <p>Java was created in <strong>1995</strong> and is used by billions of devices. Your first Java program says "Hello, World!" to the screen.</p>
+    </div>
+    <div class="card">
+      <h3>Your First Program</h3>
+      <pre><code class="language-java">public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}</code></pre>
+      <div class="output-box">📟 Output: Hello, World!</div>
+    </div>
+    <div class="card">
+      <h3>🔑 Key Words Explained</h3>
+      <ul>
+        <li><code class="inline">class</code> — A blueprint for your program (like a recipe card)</li>
+        <li><code class="inline">main</code> — Where Java starts running your code</li>
+        <li><code class="inline">System.out.println()</code> — Prints text to the screen</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- VARIABLES -->
+<section id="variables">
+  <hr class="divider" style="background:linear-gradient(90deg,var(--orange),var(--yellow));margin-bottom:0">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FFF4E6">📦</div>
+      <h2>Variables &amp; Data Types</h2>
+    </div>
+    <div class="card">
+      <p>A <strong>variable</strong> is like a labeled box where you store information. You give it a name so you can use it later!</p>
+    </div>
+    <div class="card">
+      <h3>Common Data Types</h3>
+      <pre><code class="language-java">// int — whole numbers
+int age = 10;
+int score = 250;
+
+// double — numbers with decimals
+double height = 4.5;
+
+// String — text (always in "quotes")
+String name = "Alex";
+
+// boolean — true or false
+boolean isHappy = true;</code></pre>
+    </div>
+    <div class="card">
+      <h3>Doing Math with Variables</h3>
+      <pre><code class="language-java">int apples = 5;
+int oranges = 3;
+int total = apples + oranges;
+System.out.println("Total fruit: " + total);</code></pre>
+      <div class="output-box">📟 Output: Total fruit: 8</div>
+    </div>
+    <!-- Demo -->
+    <div class="demo-box">
+      <h4>🎮 Try it: Variable Calculator</h4>
+      <input type="number" id="num1" placeholder="First number" style="width:140px" />
+      <select id="operator">
+        <option value="+">+</option>
+        <option value="-">−</option>
+        <option value="*">×</option>
+        <option value="/">÷</option>
+      </select>
+      <input type="number" id="num2" placeholder="Second number" style="width:140px" />
+      <button class="demo-btn" onclick="calcDemo()">Run ▶</button>
+      <div class="demo-result" id="calc-result">Your result will appear here...</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOOPS -->
+<section id="loops">
+  <hr class="divider" style="background:linear-gradient(90deg,var(--green),var(--blue));margin-bottom:0">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E6FFF7">🔄</div>
+      <h2>Loops</h2>
+    </div>
+    <div class="card">
+      <p>A <strong>loop</strong> repeats code many times. Instead of writing the same line 100 times, loops do it for you automatically!</p>
+    </div>
+    <div class="card">
+      <h3>For Loop — Count from 1 to 5</h3>
+      <pre><code class="language-java">for (int i = 1; i &lt;= 5; i++) {
+    System.out.println("Count: " + i);
+}</code></pre>
+      <div class="output-box">📟 Count: 1<br>📟 Count: 2<br>📟 Count: 3<br>📟 Count: 4<br>📟 Count: 5</div>
+    </div>
+    <div class="card">
+      <h3>While Loop — Keep going until done</h3>
+      <pre><code class="language-java">int cookies = 5;
+while (cookies &gt; 0) {
+    System.out.println("Eating cookie #" + cookies);
+    cookies--;  // remove one cookie
+}
+System.out.println("All cookies eaten!");</code></pre>
+    </div>
+    <!-- Loop Demo -->
+    <div class="demo-box">
+      <h4>🎮 Loop Visualizer</h4>
+      Count from <input type="number" id="loop-start" value="1" style="width:60px"> to
+      <input type="number" id="loop-end" value="8" style="width:60px">
+      <button class="demo-btn" onclick="runLoopVis()">Animate ▶</button>
+      <div class="loop-vis" id="loop-vis"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONDITIONALS -->
+<section id="conditionals">
+  <hr class="divider" style="background:linear-gradient(90deg,var(--pink),var(--orange));margin-bottom:0">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FFF0F5">🤔</div>
+      <h2>If / Else — Making Decisions</h2>
+    </div>
+    <div class="card">
+      <p>Programs need to make decisions. <strong>if/else</strong> checks a condition and does different things based on whether it's true or false.</p>
+    </div>
+    <div class="card">
+      <h3>Temperature Check</h3>
+      <pre><code class="language-java">int temperature = 30;
+
+if (temperature &gt; 25) {
+    System.out.println("It's hot! Go swimming! 🏊");
+} else if (temperature &gt; 15) {
+    System.out.println("Nice weather! Go outside! 🌤️");
+} else {
+    System.out.println("It's cold! Wear a jacket! 🧥");
+}</code></pre>
+      <div class="output-box">📟 It's hot! Go swimming! 🏊</div>
+    </div>
+    <!-- Temp Demo -->
+    <div class="demo-box">
+      <h4>🎮 Try it: Temperature Advisor</h4>
+      <input type="range" id="temp-slider" min="-10" max="45" value="22"
+        oninput="tempDemo()" style="width:200px;margin:8px 0">
+      <span id="temp-display" style="font-weight:700;font-size:1.1rem">22°C</span>
+      <div class="demo-result" id="temp-result">Move the slider!</div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODS -->
+<section id="methods">
+  <hr class="divider" style="background:linear-gradient(90deg,var(--purple),var(--blue));margin-bottom:0">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#F5EEFF">⚙️</div>
+      <h2>Methods — Reusable Code</h2>
+    </div>
+    <div class="card">
+      <p>A <strong>method</strong> is a named block of code you can call whenever you need it. Think of it like a recipe — write it once, cook it anytime!</p>
+    </div>
+    <div class="card">
+      <h3>Greet Method</h3>
+      <pre><code class="language-java">// Define the method
+static void greet(String name) {
+    System.out.println("Hello, " + name + "! Welcome to Java! 🎉");
+}
+
+// Call the method
+public static void main(String[] args) {
+    greet("Alex");
+    greet("Sam");
+    greet("Jordan");
+}</code></pre>
+      <div class="output-box">
+        📟 Hello, Alex! Welcome to Java! 🎉<br>
+        📟 Hello, Sam! Welcome to Java! 🎉<br>
+        📟 Hello, Jordan! Welcome to Java! 🎉
+      </div>
+    </div>
+    <div class="card">
+      <h3>Method that Returns a Value</h3>
+      <pre><code class="language-java">static int add(int a, int b) {
+    return a + b;
+}
+
+// In main:
+int result = add(4, 7);
+System.out.println("4 + 7 = " + result);</code></pre>
+      <div class="output-box">📟 4 + 7 = 11</div>
+    </div>
+    <!-- Method Demo -->
+    <div class="demo-box">
+      <h4>🎮 Try it: Call the greet() Method</h4>
+      <input type="text" id="greet-name" placeholder="Type your name" style="width:200px" />
+      <button class="demo-btn" onclick="greetDemo()">greet() ▶</button>
+      <div class="demo-result" id="greet-result">Enter your name and click the button!</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <hr class="divider" style="background:linear-gradient(90deg,var(--yellow),var(--orange));margin-bottom:0">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FFFBE6">🏆</div>
+      <h2>Quiz Time!</h2>
+    </div>
+    <div class="quiz-container">
+      <div class="quiz-progress" id="quiz-progress"></div>
+      <!-- Question 1 -->
+      <div class="quiz-question active" data-index="0">
+        <h3>1. What does <code class="inline">System.out.println()</code> do?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Adds two numbers</button>
+          <button class="quiz-option" onclick="answer(this, true)">Prints text to the screen</button>
+          <button class="quiz-option" onclick="answer(this, false)">Creates a new variable</button>
+          <button class="quiz-option" onclick="answer(this, false)">Starts a loop</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="nextQuestion()">Next →</button>
+      </div>
+      <!-- Question 2 -->
+      <div class="quiz-question" data-index="1">
+        <h3>2. Which data type stores whole numbers?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">String</button>
+          <button class="quiz-option" onclick="answer(this, false)">double</button>
+          <button class="quiz-option" onclick="answer(this, true)">int</button>
+          <button class="quiz-option" onclick="answer(this, false)">boolean</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="nextQuestion()">Next →</button>
+      </div>
+      <!-- Question 3 -->
+      <div class="quiz-question" data-index="2">
+        <h3>3. A <code class="inline">for</code> loop is used to...</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Make a decision</button>
+          <button class="quiz-option" onclick="answer(this, true)">Repeat code a number of times</button>
+          <button class="quiz-option" onclick="answer(this, false)">Store text</button>
+          <button class="quiz-option" onclick="answer(this, false)">Create a method</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="nextQuestion()">Next →</button>
+      </div>
+      <!-- Question 4 -->
+      <div class="quiz-question" data-index="3">
+        <h3>4. What keyword checks a condition in Java?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">loop</button>
+          <button class="quiz-option" onclick="answer(this, false)">when</button>
+          <button class="quiz-option" onclick="answer(this, true)">if</button>
+          <button class="quiz-option" onclick="answer(this, false)">check</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="nextQuestion()">Next →</button>
+      </div>
+      <!-- Question 5 -->
+      <div class="quiz-question" data-index="4">
+        <h3>5. Which stores the value <code class="inline">true</code> or <code class="inline">false</code>?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">int</button>
+          <button class="quiz-option" onclick="answer(this, true)">boolean</button>
+          <button class="quiz-option" onclick="answer(this, false)">String</button>
+          <button class="quiz-option" onclick="answer(this, false)">char</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="nextQuestion()">Next →</button>
+      </div>
+      <!-- Question 6 -->
+      <div class="quiz-question" data-index="5">
+        <h3>6. What does the <code class="inline">return</code> keyword do in a method?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Starts a loop</button>
+          <button class="quiz-option" onclick="answer(this, false)">Prints the result</button>
+          <button class="quiz-option" onclick="answer(this, true)">Sends a value back to the caller</button>
+          <button class="quiz-option" onclick="answer(this, false)">Declares a variable</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="nextQuestion()">Next →</button>
+      </div>
+      <!-- Question 7 -->
+      <div class="quiz-question" data-index="6">
+        <h3>7. Strings in Java are surrounded by...</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Single quotes — 'hello'</button>
+          <button class="quiz-option" onclick="answer(this, true)">Double quotes — "hello"</button>
+          <button class="quiz-option" onclick="answer(this, false)">Curly braces — {hello}</button>
+          <button class="quiz-option" onclick="answer(this, false)">Parentheses — (hello)</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="nextQuestion()">Next →</button>
+      </div>
+      <!-- Question 8 -->
+      <div class="quiz-question" data-index="7">
+        <h3>8. What is the entry point of every Java program?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">start()</button>
+          <button class="quiz-option" onclick="answer(this, false)">run()</button>
+          <button class="quiz-option" onclick="answer(this, true)">main()</button>
+          <button class="quiz-option" onclick="answer(this, false)">begin()</button>
+        </div>
+        <div class="quiz-feedback"></div>
+        <button class="quiz-next" onclick="showScore()">See My Score 🏆</button>
+      </div>
+      <!-- Score Screen -->
+      <div id="score-screen">
+        <div class="score-emoji" id="score-emoji">🎉</div>
+        <h2 id="score-title">Amazing!</h2>
+        <div class="score-badge" id="score-badge">8 / 8</div>
+        <p id="score-msg">You're a Java superstar!</p>
+        <button class="restart-btn" onclick="restartQuiz()">Try Again 🔄</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Made with <span>♥</span> for young coders — Keep learning, keep building! ☕</p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    document.getElementById('progress-bar').style.width = (scrolled / total * 100) + '%';
+  });
+
+  // Highlight.js
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+    buildQuizProgress();
+  });
+
+  // --- DEMO 1: Calculator ---
+  function calcDemo() {
+    const a = parseFloat(document.getElementById('num1').value);
+    const op = document.getElementById('operator').value;
+    const b = parseFloat(document.getElementById('num2').value);
+    if (isNaN(a) || isNaN(b)) {
+      document.getElementById('calc-result').textContent = '⚠️ Please enter two numbers!';
+      return;
+    }
+    const ops = { '+': a+b, '-': a-b, '*': a*b, '/': b !== 0 ? (a/b).toFixed(2) : 'Error: Cannot divide by 0' };
+    const sym = { '+':'+', '-':'−', '*':'×', '/':'÷' };
+    document.getElementById('calc-result').textContent =
+      `int result = ${a} ${sym[op]} ${b};\n// result = ${ops[op]}`;
+  }
+
+  // --- DEMO 2: Loop Visualizer ---
+  function runLoopVis() {
+    const start = parseInt(document.getElementById('loop-start').value) || 1;
+    const end = parseInt(document.getElementById('loop-end').value) || 8;
+    if (end - start > 20) {
+      document.getElementById('loop-vis').innerHTML = '<span style="color:var(--pink)">Max range is 20!</span>';
+      return;
+    }
+    const container = document.getElementById('loop-vis');
+    container.innerHTML = '';
+    for (let i = start; i <= end; i++) {
+      const ball = document.createElement('div');
+      ball.className = 'loop-ball';
+      ball.textContent = i;
+      container.appendChild(ball);
+    }
+    const balls = container.querySelectorAll('.loop-ball');
+    let idx = 0;
+    const tick = setInterval(() => {
+      if (idx > 0) balls[idx - 1].classList.remove('active');
+      if (idx < balls.length) {
+        balls[idx].classList.add('active');
+        idx++;
+      } else {
+        clearInterval(tick);
+      }
+    }, 400);
+  }
+
+  // --- DEMO 3: Temperature ---
+  function tempDemo() {
+    const t = parseInt(document.getElementById('temp-slider').value);
+    document.getElementById('temp-display').textContent = t + '°C';
+    let msg;
+    if (t > 30) msg = `🥵 temperature = ${t}\nif (${t} > 30) → "It's scorching! Stay hydrated! 🌊"`;
+    else if (t > 20) msg = `😊 temperature = ${t}\nelse if (${t} > 20) → "Beautiful day! Go outside! ☀️"`;
+    else if (t > 10) msg = `🧥 temperature = ${t}\nelse if (${t} > 10) → "A bit cool, grab a jacket!"`;
+    else if (t > 0) msg = `🥶 temperature = ${t}\nelse if (${t} > 0) → "Very cold! Bundle up! ❄️"`;
+    else msg = `🧊 temperature = ${t}\nelse → "Freezing! Stay inside! 🏠"`;
+    document.getElementById('temp-result').textContent = msg;
+  }
+  window.addEventListener('load', tempDemo);
+
+  // --- DEMO 4: Greet Method ---
+  function greetDemo() {
+    const name = document.getElementById('greet-name').value.trim() || 'Friend';
+    document.getElementById('greet-result').textContent =
+      `void greet("${name}") called!\n📟 Hello, ${name}! Welcome to Java! 🎉`;
+  }
+
+  // --- QUIZ ---
+  let currentQ = 0;
+  let score = 0;
+  let answered = false;
+  const total = 8;
+
+  function buildQuizProgress() {
+    const container = document.getElementById('quiz-progress');
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'quiz-dot' + (i === 0 ? ' current' : '');
+      container.appendChild(dot);
+    }
+  }
+
+  function answer(btn, correct) {
+    if (answered) return;
+    answered = true;
+    const q = document.querySelector('.quiz-question.active');
+    const feedback = q.querySelector('.quiz-feedback');
+    const nextBtn = q.querySelector('.quiz-next');
+    q.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+    if (correct) {
+      btn.classList.add('correct');
+      feedback.textContent = '✅ Correct! Great job!';
+      feedback.style.color = '#0a7a50';
+      score++;
+    } else {
+      btn.classList.add('wrong');
+      const correctBtn = [...q.querySelectorAll('.quiz-option')].find((_, i) =>
+        q.querySelectorAll('.quiz-option')[i].onclick.toString().includes('true'));
+      feedback.textContent = '❌ Not quite — the correct answer is highlighted in green.';
+      feedback.style.color = '#a0123a';
+      q.querySelectorAll('.quiz-option').forEach(b => {
+        if (b.onclick.toString().includes('answer(this, true)')) b.classList.add('correct');
+      });
+    }
+    nextBtn.style.display = 'inline-block';
+  }
+
+  function nextQuestion() {
+    const dots = document.querySelectorAll('.quiz-dot');
+    dots[currentQ].classList.remove('current');
+    dots[currentQ].classList.add('done');
+    document.querySelector('.quiz-question.active').classList.remove('active');
+    currentQ++;
+    if (currentQ < total) {
+      dots[currentQ].classList.add('current');
+      document.querySelector(`.quiz-question[data-index="${currentQ}"]`).classList.add('active');
+      answered = false;
+    }
+  }
+
+  function showScore() {
+    nextQuestion();
+    const screen = document.getElementById('score-screen');
+    screen.style.display = 'block';
+    document.querySelectorAll('.quiz-question').forEach(q => q.style.display = 'none');
+    document.getElementById('score-badge').textContent = score + ' / ' + total;
+    const pct = score / total;
+    let emoji, title, msg;
+    if (pct === 1)       { emoji='🏆'; title='Perfect Score!';   msg='You are a Java superstar! 🌟'; }
+    else if (pct >= 0.75){ emoji='🎉'; title='Well Done!';        msg='Great work — almost perfect!'; }
+    else if (pct >= 0.5) { emoji='👍'; title='Good Job!';         msg='Keep practicing — you\'re getting it!'; }
+    else                 { emoji='📚'; title='Keep Learning!';    msg='Review the lessons and try again — you\'ve got this!'; }
+    document.getElementById('score-emoji').textContent = emoji;
+    document.getElementById('score-title').textContent = title;
+    document.getElementById('score-msg').textContent = msg;
+  }
+
+  function restartQuiz() {
+    currentQ = 0; score = 0; answered = false;
+    document.getElementById('score-screen').style.display = 'none';
+    document.querySelectorAll('.quiz-question').forEach((q, i) => {
+      q.style.display = '';
+      q.classList.toggle('active', i === 0);
+      q.querySelectorAll('.quiz-option').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct', 'wrong');
+      });
+      q.querySelector('.quiz-feedback').textContent = '';
+      q.querySelector('.quiz-next').style.display = 'none';
+    });
+    document.querySelectorAll('.quiz-dot').forEach((d, i) => {
+      d.className = 'quiz-dot' + (i === 0 ? ' current' : '');
+    });
+  }
+</script>
+</body>
+</html>

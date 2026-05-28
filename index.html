@@ -969,29 +969,53 @@ function showLesson(num) {
   attachRunButtons();
 }
 
-// ─── INIT HIGHLIGHT + RUN BUTTONS ───
+// ─── INIT CODE EDITORS ───
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('#lesson-1 pre code').forEach(el => hljs.highlightElement(el));
-  attachRunButtons();
+  initCodeEditors();
 });
 
-// ─── RUN BUTTONS ───
-function attachRunButtons() {
+function initCodeEditors() {
   document.querySelectorAll('pre code.language-java').forEach(function(codeEl) {
     const pre = codeEl.parentElement;
-    // avoid double-adding
-    if (pre.querySelector('.code-run-btn')) return;
+    if (pre.dataset.cmDone) return; // already replaced
+    pre.dataset.cmDone = '1';
+
+    const rawCode = codeEl.textContent;
+
+    // Build wrapper
+    const wrap = document.createElement('div');
+    wrap.className = 'cm-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+
+    // Init CodeMirror inside wrapper
+    const cm = CodeMirror(wrap, {
+      value: rawCode,
+      mode: 'text/x-java',
+      theme: 'dracula',
+      lineNumbers: true,
+      lineWrapping: false,
+      tabSize: 4,
+      indentWithTabs: false,
+      viewportMargin: Infinity,
+      extraKeys: {
+        'Tab': function(cm){ cm.execCommand('indentMore'); },
+        'Shift-Tab': function(cm){ cm.execCommand('indentLess'); }
+      }
+    });
+
+    // Remove original static block
+    pre.remove();
+
+    // Run button — always sends current editor content
     const btn = document.createElement('button');
     btn.className = 'code-run-btn';
     btn.textContent = '▶ Run';
-    btn.title = 'Open in Java editor (edit & run)';
+    btn.title = 'Edit the code, then click Run to execute it';
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
-      // innerText gives clean text after hljs adds spans
-      const code = codeEl.innerText || codeEl.textContent;
-      openRunModal(code);
+      openRunModal(cm.getValue());
     });
-    pre.appendChild(btn);
+    wrap.appendChild(btn);
   });
 }
 

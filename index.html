@@ -953,17 +953,14 @@ document.addEventListener('DOMContentLoaded', () => {
 function initCodeEditors() {
   document.querySelectorAll('pre code.language-java').forEach(function(codeEl) {
     const pre = codeEl.parentElement;
-    if (pre.dataset.cmDone) return; // already replaced
+    if (pre.dataset.cmDone) return;
     pre.dataset.cmDone = '1';
 
     const rawCode = codeEl.textContent;
-
-    // Build wrapper
     const wrap = document.createElement('div');
     wrap.className = 'cm-wrap';
     pre.parentNode.insertBefore(wrap, pre);
 
-    // Init CodeMirror inside wrapper
     const cm = CodeMirror(wrap, {
       value: rawCode,
       mode: 'text/x-java',
@@ -974,59 +971,109 @@ function initCodeEditors() {
       indentWithTabs: false,
       viewportMargin: Infinity,
       extraKeys: {
-        'Tab': function(cm){ cm.execCommand('indentMore'); },
+        'Tab':       function(cm){ cm.execCommand('indentMore'); },
         'Shift-Tab': function(cm){ cm.execCommand('indentLess'); }
       }
     });
-
-    // Remove original static block
     pre.remove();
 
-    // Run button — always sends current editor content
-    const btn = document.createElement('button');
-    btn.className = 'code-run-btn';
-    btn.textContent = '▶ Run';
-    btn.title = 'Edit the code, then click Run to execute it';
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      openRunModal(cm.getValue());
+    // Toolbar
+    const toolbar = document.createElement('div');
+    toolbar.className = 'cm-toolbar';
+
+    const runBtn = document.createElement('button');
+    runBtn.className = 'cm-run-btn';
+    runBtn.textContent = '▶ Run';
+
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'cm-reset-btn';
+    resetBtn.textContent = '↺ Reset';
+    resetBtn.title = 'Restore original code';
+
+    const statusEl = document.createElement('span');
+    statusEl.className = 'cm-status-badge';
+
+    toolbar.appendChild(runBtn);
+    toolbar.appendChild(resetBtn);
+    toolbar.appendChild(statusEl);
+    wrap.appendChild(toolbar);
+
+    // Inline output panel
+    const outputEl = document.createElement('div');
+    outputEl.className = 'cm-output';
+    wrap.appendChild(outputEl);
+
+    runBtn.addEventListener('click', function() {
+      executeCode(cm.getValue(), outputEl, statusEl, runBtn);
     });
-    wrap.appendChild(btn);
+
+    resetBtn.addEventListener('click', function() {
+      cm.setValue(rawCode);
+      outputEl.style.display = 'none';
+      statusEl.textContent = '';
+    });
   });
 }
 
-function openRunModal(code) {
-  const modal = document.getElementById('run-modal');
-  const frame = document.getElementById('run-frame');
-  // wrap loose snippets in a runnable class so they compile
+// ─── EXECUTE VIA PISTON API ───
+async function executeCode(code, outputEl, statusEl, btn) {
   const runnable = wrapIfNeeded(code);
-  const url = 'https://onecompiler.com/embed/java?hideTitle=true&theme=dark&hideLanguageSelector=true&code='
-              + encodeURIComponent(runnable);
-  frame.src = url;
-  modal.classList.add('open');
+  btn.disabled = true;
+  btn.textContent = '⏳ Running…';
+  statusEl.textContent = '';
+  outputEl.style.display = 'none';
+  outputEl.className = 'cm-output';
+
+  try {
+    const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        language: 'java',
+        version: '*',
+        files: [{ name: 'Main.java', content: runnable }]
+      })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    let out = '';
+    let isErr = false;
+
+    if (data.compile && data.compile.code !== 0) {
+      // Compile error — clean up noisy java path prefix
+      out = (data.compile.stderr || data.compile.output || 'Compile error')
+              .replace(/\/piston\/jobs\/[^/]+\/[^:]+:/g, 'Main.java:');
+      isErr = true;
+    } else if (data.run) {
+      out = data.run.output || data.run.stdout || '';
+      if (!out.trim() && data.run.stderr) { out = data.run.stderr; isErr = true; }
+      if (!out.trim()) out = '(no output)';
+    }
+
+    outputEl.textContent = out.trimEnd();
+    outputEl.className = 'cm-output' + (isErr ? ' err' : '');
+    outputEl.style.display = 'block';
+    statusEl.textContent = isErr ? '✗ Error' : '✓ Done';
+    statusEl.style.color  = isErr ? '#f87171' : '#10b981';
+
+  } catch (e) {
+    outputEl.textContent = '⚠ Could not reach the Java runner.\n' + e.message;
+    outputEl.className = 'cm-output err';
+    outputEl.style.display = 'block';
+    statusEl.textContent = '✗ Failed';
+    statusEl.style.color  = '#f87171';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '▶ Run';
+  }
 }
 
 function wrapIfNeeded(code) {
-  // If the snippet already has a class declaration, use as-is
   if (/\bclass\s+\w+/.test(code)) return code;
-  // Otherwise wrap in a runnable Hello class
   return 'public class Main {\n    public static void main(String[] args) {\n'
        + code.split('\n').map(l => '        ' + l).join('\n')
        + '\n    }\n}';
-}
-
-// ─── MODAL CLOSE ───
-document.getElementById('modal-close-btn').addEventListener('click', closeRunModal);
-document.getElementById('run-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeRunModal();
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeRunModal();
-});
-function closeRunModal() {
-  document.getElementById('run-modal').classList.remove('open');
-  // clear src to stop execution
-  setTimeout(() => { document.getElementById('run-frame').src = ''; }, 300);
 }
 
 // ─── DEMO 1: CASTING ───

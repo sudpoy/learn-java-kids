@@ -313,6 +313,49 @@ pre code{font-family:'Fira Code','Cascadia Code',monospace!important;}
   .lesson-header,.lesson-content{padding:24px;}
   #mob-toggle{display:block;}
 }
+
+/* ─── RUN BUTTON (on code blocks) ─── */
+.code-run-btn{
+  position:absolute;top:8px;right:10px;
+  background:#059669;color:#fff;border:none;
+  padding:4px 14px;border-radius:5px;
+  font-size:.72rem;font-weight:700;cursor:pointer;
+  opacity:0;transition:opacity .15s,transform .1s;
+  z-index:10;letter-spacing:.04em;font-family:inherit;
+  line-height:1.6;
+}
+pre:hover .code-run-btn{opacity:1;}
+.code-run-btn:hover{transform:translateY(-1px);background:#047857;}
+
+/* ─── RUN MODAL ─── */
+#run-modal{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.82);z-index:1000;
+  align-items:center;justify-content:center;
+}
+#run-modal.open{display:flex;}
+.modal-box{
+  width:940px;max-width:96vw;height:84vh;
+  background:#13151f;border-radius:12px;
+  overflow:hidden;border:1px solid #1e2235;
+  display:flex;flex-direction:column;
+  box-shadow:0 28px 70px rgba(0,0,0,.7);
+}
+.modal-hdr{
+  padding:11px 16px;border-bottom:1px solid #1e2235;
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;background:#161929;
+}
+.modal-hdr .mdot{width:8px;height:8px;border-radius:50%;}
+.modal-hdr .modal-title{font-size:.8rem;font-weight:700;color:#818cf8;letter-spacing:.04em;flex:1;}
+.modal-hdr .modal-hint{font-size:.75rem;color:#4b5563;}
+.modal-hdr .modal-close{
+  background:none;border:1px solid #1e2235;color:#6b7280;
+  padding:4px 10px;border-radius:5px;font-size:.85rem;cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.modal-hdr .modal-close:hover{background:#1e2235;color:#fff;}
+#run-frame{flex:1;border:none;width:100%;}
 </style>
 </head>
 <body>
@@ -826,6 +869,21 @@ System.out.println('A' + 1);</code></pre>
 
 </main>
 
+<!-- ═══ RUN MODAL ═══ -->
+<div id="run-modal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="mdot" style="background:#ef4444"></div>
+      <div class="mdot" style="background:#f59e0b"></div>
+      <div class="mdot" style="background:#10b981"></div>
+      <span class="modal-title">☕ Java Editor — edit &amp; run this code</span>
+      <span class="modal-hint">Powered by OneCompiler</span>
+      <button class="modal-close" id="modal-close-btn" title="Close (Esc)">✕ Close</button>
+    </div>
+    <iframe id="run-frame" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
 <script>
 // ─── LESSON DATA ───
 const lessons = [
@@ -879,12 +937,68 @@ function showLesson(num) {
   document.getElementById('main').scrollTop = 0;
   // Re-highlight code in new panel
   document.querySelectorAll('#lesson-' + num + ' pre code:not(.hljs)').forEach(el => hljs.highlightElement(el));
+  attachRunButtons();
 }
 
-// ─── INIT HIGHLIGHT ───
+// ─── INIT HIGHLIGHT + RUN BUTTONS ───
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#lesson-1 pre code').forEach(el => hljs.highlightElement(el));
+  attachRunButtons();
 });
+
+// ─── RUN BUTTONS ───
+function attachRunButtons() {
+  document.querySelectorAll('pre code.language-java').forEach(function(codeEl) {
+    const pre = codeEl.parentElement;
+    // avoid double-adding
+    if (pre.querySelector('.code-run-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'code-run-btn';
+    btn.textContent = '▶ Run';
+    btn.title = 'Open in Java editor (edit & run)';
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      // innerText gives clean text after hljs adds spans
+      const code = codeEl.innerText || codeEl.textContent;
+      openRunModal(code);
+    });
+    pre.appendChild(btn);
+  });
+}
+
+function openRunModal(code) {
+  const modal = document.getElementById('run-modal');
+  const frame = document.getElementById('run-frame');
+  // wrap loose snippets in a runnable class so they compile
+  const runnable = wrapIfNeeded(code);
+  const url = 'https://onecompiler.com/embed/java?hideTitle=true&theme=dark&hideLanguageSelector=true&code='
+              + encodeURIComponent(runnable);
+  frame.src = url;
+  modal.classList.add('open');
+}
+
+function wrapIfNeeded(code) {
+  // If the snippet already has a class declaration, use as-is
+  if (/\bclass\s+\w+/.test(code)) return code;
+  // Otherwise wrap in a runnable Hello class
+  return 'public class Main {\n    public static void main(String[] args) {\n'
+       + code.split('\n').map(l => '        ' + l).join('\n')
+       + '\n    }\n}';
+}
+
+// ─── MODAL CLOSE ───
+document.getElementById('modal-close-btn').addEventListener('click', closeRunModal);
+document.getElementById('run-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeRunModal();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeRunModal();
+});
+function closeRunModal() {
+  document.getElementById('run-modal').classList.remove('open');
+  // clear src to stop execution
+  setTimeout(() => { document.getElementById('run-frame').src = ''; }, 300);
+}
 
 // ─── DEMO 1: CASTING ───
 function runCast() {

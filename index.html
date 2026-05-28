@@ -161,6 +161,33 @@ p.body{color:#94a3b8;font-size:.93rem;line-height:1.75;margin-bottom:10px;}
 pre{border-radius:10px;margin:14px 0;font-size:.84rem;overflow-x:auto;position:relative;}
 pre code{font-family:'Fira Code','Cascadia Code',monospace!important;}
 .hljs{background:#1a1d2e!important;border:1px solid #1e2235;}
+
+/* ─── CODEMIRROR EDITOR ─── */
+.cm-wrap{position:relative;margin:14px 0;}
+.CodeMirror{
+  border-radius:10px!important;
+  border:1px solid #1e2235!important;
+  font-family:'Fira Code','Cascadia Code',monospace!important;
+  font-size:.84rem!important;
+  height:auto!important;
+  background:#1a1d2e!important;
+  padding-bottom:4px;
+}
+.CodeMirror-scroll{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  min-height:2em;
+}
+.CodeMirror-gutters{
+  background:#161929!important;
+  border-right:1px solid #1e2235!important;
+  border-radius:10px 0 0 10px!important;
+}
+.CodeMirror-linenumber{color:#4b5563!important;font-size:.77rem;}
+.CodeMirror-cursor{border-left-color:#818cf8!important;}
+.CodeMirror-selected{background:rgba(79,70,229,.25)!important;}
+.cm-wrap .code-run-btn{position:absolute;top:8px;right:10px;opacity:0;}
+.cm-wrap:hover .code-run-btn{opacity:1;}
 .code-label{
   font-size:.72rem;font-weight:700;letter-spacing:.05em;
   color:#4b5563;text-transform:uppercase;margin-bottom:4px;

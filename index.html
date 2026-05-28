@@ -1013,7 +1013,7 @@ function initCodeEditors() {
   });
 }
 
-// ─── EXECUTE VIA PISTON API ───
+// ─── EXECUTE VIA JUDGE0 CE API ───
 async function executeCode(code, outputEl, statusEl, btn) {
   const runnable = wrapIfNeeded(code);
   btn.disabled = true;
@@ -1023,13 +1023,15 @@ async function executeCode(code, outputEl, statusEl, btn) {
   outputEl.className = 'cm-output';
 
   try {
-    const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+    // Judge0 CE — free public API, no auth required
+    // language_id 62 = Java (OpenJDK 13)
+    const res = await fetch('https://ce.judge0.com/submissions?base64_encoded=false&wait=true', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        language: 'java',
-        version: '*',
-        files: [{ name: 'Main.java', content: runnable }]
+        source_code: runnable,
+        language_id: 62,
+        stdin: ''
       })
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1037,15 +1039,22 @@ async function executeCode(code, outputEl, statusEl, btn) {
 
     let out = '';
     let isErr = false;
+    const sid = data.status && data.status.id;
 
-    if (data.compile && data.compile.code !== 0) {
-      // Compile error — clean up noisy java path prefix
-      out = (data.compile.stderr || data.compile.output || 'Compile error')
-              .replace(/\/piston\/jobs\/[^/]+\/[^:]+:/g, 'Main.java:');
+    if (sid === 6) {
+      // Compilation Error
+      out = (data.compile_output || 'Compilation error')
+              .replace(/\/[^\s]*Main\.java:/g, 'Main.java:');
       isErr = true;
-    } else if (data.run) {
-      out = data.run.output || data.run.stdout || '';
-      if (!out.trim() && data.run.stderr) { out = data.run.stderr; isErr = true; }
+    } else if (sid >= 7 && sid <= 12) {
+      // Runtime error variants
+      out = data.stderr || data.message || ('Runtime error (status ' + sid + ')');
+      isErr = true;
+    } else if (sid === 5) {
+      out = 'Time limit exceeded';
+      isErr = true;
+    } else {
+      out = data.stdout || '';
       if (!out.trim()) out = '(no output)';
     }
 

@@ -964,9 +964,8 @@ function showLesson(num) {
   document.getElementById('prog-fill').style.width = (live / 10 * 100) + '%';
   // Scroll main to top
   document.getElementById('main').scrollTop = 0;
-  // Re-highlight code in new panel
-  document.querySelectorAll('#lesson-' + num + ' pre code:not(.hljs)').forEach(el => hljs.highlightElement(el));
-  attachRunButtons();
+  // Init editable code editors in newly shown panel
+  initCodeEditors();
 }
 
 // ─── INIT CODE EDITORS ───

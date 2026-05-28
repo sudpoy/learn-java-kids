@@ -1077,6 +1077,16 @@ async function executeCode(code, outputEl, statusEl, btn) {
 }
 
 function wrapIfNeeded(code) {
+  // If code has a class declaration, ensure the public class is named Main
+  // (Judge0 compiles as Main.java, so the public class must match)
+  const m = code.match(/\bpublic\s+class\s+(\w+)/);
+  if (m) {
+    const orig = m[1];
+    if (orig !== 'Main') {
+      return code.replace(new RegExp('\\b' + orig + '\\b', 'g'), 'Main');
+    }
+    return code;
+  }
   if (/\bclass\s+\w+/.test(code)) return code;
   return 'public class Main {\n    public static void main(String[] args) {\n'
        + code.split('\n').map(l => '        ' + l).join('\n')

@@ -1,0 +1,391 @@
+<div class="lesson-header">
+  <div class="lesson-badge"><span class="dot"></span>Week 1 of 10</div>
+  <h2>Java Foundations</h2>
+  <p class="desc">Learn how Java actually runs, meet the 8 primitive types, write your first variables, and understand operators and type casting.</p>
+  <div class="lesson-stats">
+    <div class="stat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Lecture: <strong>~40 min</strong></span>
+    </div>
+    <div class="stat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span>Exercise: <strong>~15 min</strong></span>
+    </div>
+    <div class="stat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Topics: <strong>JVM · Types · Variables · Operators · Casting</strong></span>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-content">
+
+  <!-- ── 1.1 HOW JAVA WORKS ── -->
+  <div class="content-section">
+    <div class="section-label">Part 1 — How Java Works</div>
+
+    <h3 class="topic">The JVM: Write Once, Run Anywhere</h3>
+    <p class="body">
+      Most programming languages compile directly to machine code for a specific computer (Windows code won't run on Mac). Java takes a different approach using the <strong>Java Virtual Machine (JVM)</strong>.
+    </p>
+    <p class="body">When you write Java, two steps happen:</p>
+    <ul style="color:#94a3b8;font-size:.93rem;line-height:1.9;padding-left:20px;margin-bottom:12px;">
+      <li><strong style="color:#cbd5e1">Compile</strong> — <code class="il">javac</code> turns your <code class="il">.java</code> file into <code class="il">.class</code> bytecode (not machine code — something in between)</li>
+      <li><strong style="color:#cbd5e1">Run</strong> — the JVM reads that bytecode and translates it for whatever machine you're on</li>
+    </ul>
+    <div class="callout info">
+      <div class="callout-title">💡 Why this matters</div>
+      <p>The same <code>.class</code> file runs on Windows, Mac, Linux, Android — without recompiling. That's why Java powers Android apps, Minecraft, and millions of enterprise servers simultaneously.</p>
+    </div>
+
+    <h3 class="topic">Your First Java Program</h3>
+    <div class="code-label">Hello.java</div>
+    <pre><code class="language-java">public class Hello {                          // class name must match filename
+    public static void main(String[] args) {  // entry point — Java starts here
+        System.out.println("Hello, World!");  // print to console
+        System.out.print("No newline here");  // print WITHOUT newline
+        System.out.printf("I am %d years old%n", 13); // formatted print
+    }
+}</code></pre>
+
+    <div class="callout">
+      <div class="callout-title">⚠️ Common mistake</div>
+      <p>The class name (<code>Hello</code>) must exactly match the filename (<code>Hello.java</code>) — case matters. This trips up everyone at first.</p>
+    </div>
+  </div>
+
+  <!-- ── 1.2 PRIMITIVE TYPES ── -->
+  <div class="content-section">
+    <div class="section-label">Part 2 — The 8 Primitive Types</div>
+
+    <h3 class="topic">Java's Type System</h3>
+    <p class="body">Java is <strong>statically typed</strong> — every variable must declare its type and it never changes. This catches mistakes at compile time before your code even runs.</p>
+
+    <table class="data-table">
+      <tr><th>Type</th><th>Stores</th><th>Size</th><th>Range / Notes</th><th>Example</th></tr>
+      <tr class="hl"><td><code>int</code></td><td>Whole numbers</td><td>32-bit</td><td>−2,147,483,648 to 2,147,483,647</td><td><code>int age = 13;</code></td></tr>
+      <tr><td><code>long</code></td><td>Large integers</td><td>64-bit</td><td>~±9.2 quintillion — needs <code>L</code> suffix</td><td><code>long pop = 8_000_000_000L;</code></td></tr>
+      <tr><td><code>double</code></td><td>Decimals</td><td>64-bit</td><td>~15 significant digits of precision</td><td><code>double pi = 3.14159;</code></td></tr>
+      <tr><td><code>float</code></td><td>Decimals (less precise)</td><td>32-bit</td><td>~7 digits — needs <code>f</code> suffix</td><td><code>float x = 3.14f;</code></td></tr>
+      <tr class="hl"><td><code>boolean</code></td><td>True or false</td><td>1-bit*</td><td>Only two possible values</td><td><code>boolean win = true;</code></td></tr>
+      <tr><td><code>char</code></td><td>One character</td><td>16-bit</td><td>Any Unicode character — use single quotes</td><td><code>char grade = 'A';</code></td></tr>
+      <tr><td><code>byte</code></td><td>Tiny integers</td><td>8-bit</td><td>−128 to 127 — useful for raw data/files</td><td><code>byte b = 100;</code></td></tr>
+      <tr><td><code>short</code></td><td>Small integers</td><td>16-bit</td><td>−32,768 to 32,767 — rarely used</td><td><code>short s = 1000;</code></td></tr>
+    </table>
+    <p style="font-size:12px;color:#6b7280;margin-top:6px;">* Conceptually 1 bit of information, but the JVM stores a standalone <code>boolean</code> as a 32-bit <code>int</code> internally; in a <code>boolean[]</code> array each element uses 1 byte.</p>
+
+    <div class="callout info">
+      <div class="callout-title">💡 String is NOT a primitive</div>
+      <p><code>String</code> is a capital-S class (an object), not a primitive. It gets special treatment in Java — you can declare it like a primitive, but it has methods and behaves differently.</p>
+    </div>
+  </div>
+
+  <!-- ── 1.3 VARIABLES ── -->
+  <div class="content-section">
+    <div class="section-label">Part 3 — Variables &amp; Constants</div>
+
+    <h3 class="topic">Declaring and Assigning Variables</h3>
+    <pre><code class="language-java">// Declaration + assignment in one line (most common)
+int score = 100;
+double gpa = 3.85;
+boolean isPassing = true;
+char initial = 'J';
+String name = "Alex";
+
+// Declare first, assign later
+int level;
+level = 5;          // must assign before use or compiler will error
+
+// Multiple declarations of same type
+int x = 10, y = 20, z = 30;
+
+// Constants — use final, ALL_CAPS by convention
+final double PI = 3.14159265;
+final int MAX_STUDENTS = 30;
+// PI = 3.0;  // ❌ COMPILE ERROR — can't reassign a final variable
+
+// var (Java 10+) — type inferred from value
+var message = "Hello!";  // Java infers: String
+var count = 42;           // Java infers: int</code></pre>
+
+    <h3 class="topic">Naming Rules</h3>
+    <p class="body">Variable names: start with a letter, <code class="il">$</code>, or <code class="il">_</code>; no spaces; can't be reserved words (<code class="il">int</code>, <code class="il">class</code>, etc.).</p>
+    <p class="body">Java convention: <strong>camelCase</strong> for variables and methods (<code class="il">playerScore</code>, <code class="il">firstName</code>), <strong>PascalCase</strong> for classes (<code class="il">Student</code>, <code class="il">BankAccount</code>).</p>
+  </div>
+
+  <!-- ── 1.4 OPERATORS ── -->
+  <div class="content-section">
+    <div class="section-label">Part 4 — Operators</div>
+
+    <h3 class="topic">Arithmetic Operators</h3>
+    <pre><code class="language-java">int a = 17, b = 5;
+
+System.out.println(a + b);   // 22  addition
+System.out.println(a - b);   // 12  subtraction
+System.out.println(a * b);   // 85  multiplication
+System.out.println(a / b);   // 3   integer division — decimal truncated!
+System.out.println(a % b);   // 2   modulo (remainder)
+
+// To get a decimal result, cast first:
+System.out.println((double) a / b);  // 3.4
+
+// Shorthand operators
+a += 3;   // a = a + 3 → 20
+a -= 1;   // a = a - 1 → 19
+a *= 2;   // a = a * 2 → 38
+a /= 4;   // a = a / 4 → 9
+a %= 4;   // a = a % 4 → 1
+
+// Increment / Decrement
+int x = 5;
+x++;      // x = 6  (post-increment)
+++x;      // x = 7  (pre-increment)
+x--;      // x = 6  (post-decrement)
+
+// Difference matters in expressions:
+int y = 5;
+System.out.println(y++);  // prints 5, THEN increments → y is now 6
+System.out.println(++y);  // y was 6; increments FIRST → y is now 7, prints 7</code></pre>
+
+    <h3 class="topic">Comparison &amp; Logical Operators</h3>
+    <pre><code class="language-java">// Comparison — always produces boolean
+System.out.println(5 == 5);   // true   equal to
+System.out.println(5 != 3);   // true   not equal
+System.out.println(7 > 5);    // true   greater than
+System.out.println(3 >= 3);   // true   greater than or equal
+System.out.println(2 < 1);    // false  less than
+
+// Logical — combine booleans
+boolean a = true, b = false;
+System.out.println(a && b);   // false  AND — both must be true
+System.out.println(a || b);   // true   OR  — at least one must be true
+System.out.println(!a);       // false  NOT — flips the value
+
+// Short-circuit evaluation
+// If left side of && is false, right side is never checked
+// If left side of || is true, right side is never checked
+int x = 0;
+boolean r = (x != 0) && (10 / x > 1);  // safe — never divides by 0</code></pre>
+
+    <h3 class="topic">String Concatenation Trap</h3>
+    <pre><code class="language-java">// + with Strings: everything to its right becomes text
+System.out.println("Score: " + 10 + 5);   // "Score: 105"  ← NOT 15!
+System.out.println("Score: " + (10 + 5)); // "Score: 15"   ← correct
+
+// Any type + String = String
+int n = 42;
+String s = "Answer: " + n;   // "Answer: 42"
+
+// Concatenating booleans and chars
+System.out.println("Flag: " + true);   // "Flag: true"
+System.out.println("Char: " + 'A');    // "Char: A"</code></pre>
+    <div class="callout">
+      <div class="callout-title">⚠️ The #1 string concatenation gotcha</div>
+      <p><code>"result: " + 1 + 2</code> gives <code>"result: 12"</code>. The <code>+</code> is left-to-right: first it joins the string and <code>1</code> (making <code>"result: 1"</code>), then joins that with <code>2</code>. Always use parentheses when mixing arithmetic and strings.</p>
+    </div>
+  </div>
+
+  <!-- ── 1.5 TYPE CASTING ── -->
+  <div class="content-section">
+    <div class="section-label">Part 5 — Type Casting</div>
+
+    <h3 class="topic">Widening vs Narrowing Conversion</h3>
+    <p class="body">
+      <strong>Widening</strong> (safe, automatic): going from a smaller type to a larger one — no data is lost.<br/>
+      <strong>Narrowing</strong> (manual cast required): going from larger to smaller — data can be lost.
+    </p>
+    <pre><code class="language-java">// WIDENING — automatic (byte → short → int → long → float → double)
+int i = 42;
+double d = i;          // automatic: 42 → 42.0
+long l = i;            // automatic: 42 → 42L
+System.out.println(d); // 42.0
+
+// NARROWING — requires explicit cast with (type)
+double pi = 3.14159;
+int truncated = (int) pi;    // 3 — decimal part is DROPPED (not rounded!)
+System.out.println(truncated); // 3
+
+// Integer division gotcha
+int a = 7, b = 2;
+System.out.println(a / b);            // 3  ← wrong if you want 3.5
+System.out.println((double) a / b);   // 3.5 ✓  cast a before dividing
+
+// char ↔ int (char is stored as its Unicode number)
+char c = 'A';
+int code = c;                         // widening: 65
+System.out.println(code);             // 65
+
+int ascii = 66;
+char letter = (char) ascii;           // narrowing
+System.out.println(letter);           // B
+
+// 'A'=65, 'Z'=90, 'a'=97, 'z'=122, '0'=48
+// Numeric promotion: char + int → both become int (result is int, not char)
+System.out.println('a' + 3);           // 100  ← int, NOT 'd'
+System.out.println((char)('a' + 3));   // d    ← cast back to char to get the letter</code></pre>
+
+    <!-- Interactive Demo 1 -->
+    <div class="demo-wrap">
+      <div class="demo-header">
+        <div class="demo-dot" style="background:#ef4444"></div>
+        <div class="demo-dot" style="background:#f59e0b;margin-left:4px"></div>
+        <div class="demo-dot" style="background:#10b981;margin-left:4px"></div>
+        <span class="label" style="margin-left:8px">Interactive — Type Casting Explorer</span>
+      </div>
+      <div class="demo-body">
+        <p>Enter a value, pick a cast target, and see what Java would output.</p>
+        <div class="form-row">
+          <label>Value:</label>
+          <input class="demo-input" id="cast-val" type="number" value="65" style="width:90px"/>
+          <label>Cast to:</label>
+          <select class="demo-select" id="cast-to">
+            <option value="int-from-double">double → int (truncate)</option>
+            <option value="double-from-int">int → double (widen)</option>
+            <option value="char-from-int">int → char (Unicode)</option>
+            <option value="int-from-char">char → int (ASCII code)</option>
+            <option value="int-div">int ÷ int (division trap)</option>
+          </select>
+          <button class="run-btn" onclick="runCast()">Run ▶</button>
+        </div>
+        <div class="demo-result" id="cast-result">Click Run to see the result...</div>
+      </div>
+    </div>
+
+    <!-- Interactive Demo 2 -->
+    <div class="demo-wrap">
+      <div class="demo-header">
+        <div class="demo-dot" style="background:#ef4444"></div>
+        <div class="demo-dot" style="background:#f59e0b;margin-left:4px"></div>
+        <div class="demo-dot" style="background:#10b981;margin-left:4px"></div>
+        <span class="label" style="margin-left:8px">Interactive — Operator Sandbox</span>
+      </div>
+      <div class="demo-body">
+        <p>Enter two integers and explore what different operators produce.</p>
+        <div class="form-row">
+          <label>a =</label>
+          <input class="demo-input" id="op-a" type="number" value="17" style="width:80px"/>
+          <label>b =</label>
+          <input class="demo-input" id="op-b" type="number" value="5" style="width:80px"/>
+          <button class="run-btn" onclick="runOps()">Run All ▶</button>
+        </div>
+        <div class="demo-result" id="ops-result">Click Run to see all operators in action...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE ── -->
+  <div class="content-section">
+    <div class="section-label">Exercise — 15 Minutes</div>
+    <div class="exercise-header">
+      <span class="ex-icon">⌨️</span>
+      <span class="ex-label">Coding Challenge</span>
+      <span class="ex-time">⏱ ~15 min</span>
+    </div>
+    <div class="exercise-section">
+
+      <div class="exercise-task">
+        <p><strong>Task 1 — Temperature Converter</strong><br/>
+        Write a program that stores a temperature in Celsius as a <code>double</code>, then calculates and prints the Fahrenheit equivalent. Formula: <code>F = (C × 9/5) + 32</code>. Watch out for integer division! Try: 0°C, 100°C, 37°C (body temperature).</p>
+      </div>
+      <button class="hint-toggle" onclick="toggleHint('h1')">Show hint</button>
+      <div class="hint-box" id="h1">
+        <p>The formula involves <code>9/5</code> — if both are <code>int</code>, Java gives <code>1</code> (integer division). Use <code>9.0/5</code> or cast: <code>(double)9/5</code>. Your variable should be <code>double celsius = 100;</code> and compute <code>double fahrenheit = (celsius * 9.0/5) + 32;</code></p>
+      </div>
+
+      <div class="exercise-task" style="margin-top:16px">
+        <p><strong>Task 2 — Char Cipher</strong><br/>
+        Store the character <code>'A'</code> in a <code>char</code> variable. Print its integer (ASCII) value. Then print the character that is 3 positions after it in the alphabet. Now do the same for <code>'m'</code>. What do you get?</p>
+      </div>
+      <button class="hint-toggle" onclick="toggleHint('h2')">Show hint</button>
+      <div class="hint-box" id="h2">
+        <p>Cast char to int to see its value: <code>(int)'A'</code> → 65. Add 3 to get 68, cast back to char: <code>(char)('A' + 3)</code> → 'D'. For lowercase 'm': <code>(char)('m' + 3)</code> → 'p'.</p>
+      </div>
+
+      <div class="exercise-task" style="margin-top:16px">
+        <p><strong>Task 3 — Type Detective</strong><br/>
+        Without running the code, predict the output of each line. Then verify:</p>
+        <pre style="margin:8px 0;border-radius:8px;font-size:.82rem"><code class="language-java">System.out.println(10 / 3);
+System.out.println(10.0 / 3);
+System.out.println((int) 9.9);
+System.out.println(2 + 3 + " hello");
+System.out.println("hello " + 2 + 3);
+System.out.println('A' + 1);</code></pre>
+      </div>
+      <button class="hint-toggle" onclick="toggleHint('h3')">Show answers</button>
+      <div class="hint-box" id="h3">
+        <p>
+          <code>10 / 3</code> → <strong>3</strong> (int division)<br/>
+          <code>10.0 / 3</code> → <strong>3.3333...</strong> (double division)<br/>
+          <code>(int) 9.9</code> → <strong>9</strong> (truncated)<br/>
+          <code>2 + 3 + " hello"</code> → <strong>"5 hello"</strong> (math first, then string)<br/>
+          <code>"hello " + 2 + 3</code> → <strong>"hello 23"</strong> (string concat left-to-right)<br/>
+          <code>'A' + 1</code> → <strong>66</strong> (char undergoes numeric promotion to int; the whole expression evaluates as int)
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── QUIZ ── -->
+  <div class="content-section quiz-section">
+    <div class="section-label">Quick Check — 5 Questions</div>
+    <div class="q-list">
+
+      <div class="q-item">
+        <h4>1. What is the output of <code class="il">System.out.println(7 / 2);</code>?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)">3.5</button>
+          <button class="q-opt" onclick="qa(this,true)">3</button>
+          <button class="q-opt" onclick="qa(this,false)">4</button>
+          <button class="q-opt" onclick="qa(this,false)">3.0</button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>2. Which line would cause a compile error?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)"><code>double d = 5;</code></button>
+          <button class="q-opt" onclick="qa(this,true)"><code>int i = 3.7;</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>long l = 100L;</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>char c = 'X';</code></button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>3. What does <code class="il">(int) 8.9</code> evaluate to?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)">9</button>
+          <button class="q-opt" onclick="qa(this,true)">8</button>
+          <button class="q-opt" onclick="qa(this,false)">8.9</button>
+          <button class="q-opt" onclick="qa(this,false)">Error</button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>4. What is printed by <code class="il">System.out.println("x=" + 1 + 2);</code>?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)">x=3</button>
+          <button class="q-opt" onclick="qa(this,true)">x=12</button>
+          <button class="q-opt" onclick="qa(this,false)">x= 3</button>
+          <button class="q-opt" onclick="qa(this,false)">Compile error</button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>5. The JVM allows Java to "write once, run anywhere" because it...</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)">Compiles directly to machine code for every OS</button>
+          <button class="q-opt" onclick="qa(this,true)">Translates bytecode to native instructions at runtime on each machine</button>
+          <button class="q-opt" onclick="qa(this,false)">Sends the source code over the internet to a central server</button>
+          <button class="q-opt" onclick="qa(this,false)">Requires you to recompile for each operating system</button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /lesson-content -->

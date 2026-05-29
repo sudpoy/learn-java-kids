@@ -475,11 +475,12 @@ pre code{font-family:'Fira Code','Cascadia Code',monospace!important;}
           <tr><td><code>long</code></td><td>Large integers</td><td>64-bit</td><td>~±9.2 quintillion — needs <code>L</code> suffix</td><td><code>long pop = 8_000_000_000L;</code></td></tr>
           <tr><td><code>double</code></td><td>Decimals</td><td>64-bit</td><td>~15 significant digits of precision</td><td><code>double pi = 3.14159;</code></td></tr>
           <tr><td><code>float</code></td><td>Decimals (less precise)</td><td>32-bit</td><td>~7 digits — needs <code>f</code> suffix</td><td><code>float x = 3.14f;</code></td></tr>
-          <tr class="hl"><td><code>boolean</code></td><td>True or false</td><td>1-bit</td><td>Only two possible values</td><td><code>boolean win = true;</code></td></tr>
+          <tr class="hl"><td><code>boolean</code></td><td>True or false</td><td>1-bit*</td><td>Only two possible values</td><td><code>boolean win = true;</code></td></tr>
           <tr><td><code>char</code></td><td>One character</td><td>16-bit</td><td>Any Unicode character — use single quotes</td><td><code>char grade = 'A';</code></td></tr>
           <tr><td><code>byte</code></td><td>Tiny integers</td><td>8-bit</td><td>−128 to 127 — useful for raw data/files</td><td><code>byte b = 100;</code></td></tr>
           <tr><td><code>short</code></td><td>Small integers</td><td>16-bit</td><td>−32,768 to 32,767 — rarely used</td><td><code>short s = 1000;</code></td></tr>
         </table>
+        <p style="font-size:12px;color:#6b7280;margin-top:6px;">* Conceptually 1 bit of information, but the JVM stores a standalone <code>boolean</code> as a 32-bit <code>int</code> internally; in a <code>boolean[]</code> array each element uses 1 byte.</p>
 
         <div class="callout info">
           <div class="callout-title">💡 String is NOT a primitive</div>
@@ -551,8 +552,8 @@ x--;      // x = 6  (post-decrement)
 
 // Difference matters in expressions:
 int y = 5;
-System.out.println(y++);  // prints 5, THEN increments
-System.out.println(++y);  // increments FIRST, then prints 7</code></pre>
+System.out.println(y++);  // prints 5, THEN increments → y is now 6
+System.out.println(++y);  // y was 6; increments FIRST → y is now 7, prints 7</code></pre>
 
         <h3 class="topic">Comparison &amp; Logical Operators</h3>
         <pre><code class="language-java">// Comparison — always produces boolean
@@ -627,8 +628,9 @@ char letter = (char) ascii;           // narrowing
 System.out.println(letter);           // B
 
 // 'A'=65, 'Z'=90, 'a'=97, 'z'=122, '0'=48
-// So you can do arithmetic on chars:
-System.out.println((char)('a' + 3));  // d</code></pre>
+// Numeric promotion: char + int → both become int (result is int, not char)
+System.out.println('a' + 3);           // 100  ← int, NOT 'd'
+System.out.println((char)('a' + 3));   // d    ← cast back to char to get the letter</code></pre>
 
         <!-- Interactive Demo 1 -->
         <div class="demo-wrap">
@@ -725,7 +727,7 @@ System.out.println('A' + 1);</code></pre>
               <code>(int) 9.9</code> → <strong>9</strong> (truncated)<br/>
               <code>2 + 3 + " hello"</code> → <strong>"5 hello"</strong> (math first, then string)<br/>
               <code>"hello " + 2 + 3</code> → <strong>"hello 23"</strong> (string concat left-to-right)<br/>
-              <code>'A' + 1</code> → <strong>66</strong> (char treated as int in arithmetic!)
+              <code>'A' + 1</code> → <strong>66</strong> (char undergoes numeric promotion to int; the whole expression evaluates as int)
             </p>
           </div>
         </div>

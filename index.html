@@ -91,7 +91,7 @@ body{
   padding:14px 16px;border-top:1px solid #1e2235;flex-shrink:0;
 }
 .progress-label{font-size:10px;color:#4b5563;margin-bottom:6px;display:flex;justify-content:space-between;}
-.progress-bar{height:4px;background:#1e2235;border-radius:.px;overflow:hidden;}
+.progress-bar{height:4px;background:#1e2235;border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:#4f46e5;border-radius:2px;width:10%;transition:width .4s;}
 
 /* ─── MAIN CONTENT ─── */
@@ -175,7 +175,7 @@ pre code{font-family:'Fira Code','Cascadia Code',monospace!important;}
 }
 .CodeMirror-scroll{
   overflow-x:auto!important;
-  overflow-y:idden!important;
+  overflow-y:hidden!important;
   min-height:2em;
 }
 .CodeMirror-gutters{
@@ -552,7 +552,7 @@ x--;      // x = 6  (post-decrement)
 // Difference matters in expressions:
 int y = 5;
 System.out.println(y++);  // prints 5, THEN increments
-System.out.println(++z);  // increments FIRST, then prints 7</code></pre>
+System.out.println(++y);  // increments FIRST, then prints 7</code></pre>
 
         <h3 class="topic">Comparison &amp; Logical Operators</h3>
         <pre><code class="language-java">// Comparison — always produces boolean
@@ -888,9 +888,9 @@ const lessons = [
   {num:4, title:'Arrays',                     sub:'1D · 2D · algorithms · Arrays API',        color:'#10b981', live:false},
   {num:5, title:'Methods',                    sub:'parameters · overloading · scope',          color:'#f59e0b', live:false},
   {num:6, title:'Recursion',                  sub:'base case · call stack · patterns',         color:'#ef4444', live:false},
-  {num:7, title:'Classes & Objects',          sub:'fields · constructors · this',             color:'s#ec4899', live:false},
+  {num:7, title:'Classes & Objects',          sub:'fields · constructors · this',             color:'#ec4899', live:false},
   {num:8, title:'Encapsulation & Inheritance',sub:'private · extends · @Override',            color:'#f97316', live:false},
-  {num:9, title:'Strings & StringBuilder',    sub:'String API with immutability and parsing',  color:'#14b8a6', live:false},
+  {num:9, title:'Strings & StringBuilder',    sub:'String API · immutability · parsing',      color:'#14b8a6', live:false},
   {num:10,title:'Collections',                sub:'ArrayList · HashMap · generics',           color:'#6366f1', live:false},
 ];
 
@@ -907,7 +907,7 @@ lessons.forEach(l => {
     <div class="lesson-info">
       <div class="lesson-title">${l.title}</div>
       <div class="lesson-meta">${l.sub}</div>
-      <span class="lesson-tag ${l.live ? 'tag-live' : 'tag-soon'}">${l.live ? '❏ LIVE' : 'Coming Soon'}</span>
+      <span class="lesson-tag ${l.live ? 'tag-live' : 'tag-soon'}">${l.live ? '● LIVE' : 'Coming Soon'}</span>
     </div>`;
   if (l.live) {
     item.addEventListener('click', () => showLesson(l.num));
@@ -976,7 +976,7 @@ function initCodeEditors() {
 
     const resetBtn = document.createElement('button');
     resetBtn.className = 'cm-reset-btn';
-    resetBtn.textContent = '憺Reset';
+    resetBtn.textContent = '↺ Reset';
     resetBtn.title = 'Restore original code';
 
     const statusEl = document.createElement('span');
@@ -1014,9 +1014,11 @@ async function executeCode(code, outputEl, statusEl, btn) {
   outputEl.className = 'cm-output';
 
   try {
+    // Judge0 CE — free public API, no auth required
+    // language_id 62 = Java (OpenJDK 13)
     const res = await fetch('https://ce.judge0.com/submissions?base64_encoded=false&wait=true', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         source_code: runnable,
         language_id: 62,
@@ -1031,10 +1033,12 @@ async function executeCode(code, outputEl, statusEl, btn) {
     const sid = data.status && data.status.id;
 
     if (sid === 6) {
+      // Compilation Error
       out = (data.compile_output || 'Compilation error')
-              .replace(/\/[\sS]*Main\.java:/g, 'Main.java:');
+              .replace(/\/[^\s]*Main\.java:/g, 'Main.java:');
       isErr = true;
     } else if (sid >= 7 && sid <= 12) {
+      // Runtime error variants
       out = data.stderr || data.message || ('Runtime error (status ' + sid + ')');
       isErr = true;
     } else if (sid === 5) {
@@ -1064,11 +1068,15 @@ async function executeCode(code, outputEl, statusEl, btn) {
 }
 
 function wrapIfNeeded(code) {
+  // If code has a class declaration, ensure the public class is named Main
+  // (Judge0 compiles as Main.java, so the public class must match)
   const m = code.match(/\bpublic\s+class\s+(\w+)/);
   if (m) {
     const orig = m[1];
     if (orig !== 'Main') {
+      // Only rename the class declaration keyword, NOT occurrences in strings/comments
       let fixed = code.replace(/(\bpublic\s+class\s+)\w+/, '$1Main');
+      // Also rename constructor calls like "new Hello(" → "new Main("
       fixed = fixed.replace(new RegExp('(\\bnew\\s+)' + orig + '(\\s*\\()', 'g'), '$1Main$2');
       return fixed;
     }
@@ -1080,6 +1088,7 @@ function wrapIfNeeded(code) {
        + '\n    }\n}';
 }
 
+// ─── DEMO 1: CASTING ───
 function runCast() {
   const v = parseFloat(document.getElementById('cast-val').value);
   const t = document.getElementById('cast-to').value;
@@ -1091,7 +1100,7 @@ function runCast() {
     out = `double value = ${v};\nint result = (int) value;\n\n// Result: ${trunc}\n// Note: decimal part is dropped (not rounded!)`;
   } else if (t === 'double-from-int') {
     const i = Math.trunc(v);
-    out = `int value = ${i};\ndouble result = value;  // widening — automatic\n\n// Result: ${i}.0\n// Widening is always safe — co data loss`;
+    out = `int value = ${i};\ndouble result = value;  // widening — automatic\n\n// Result: ${i}.0\n// Widening is always safe — no data loss`;
   } else if (t === 'char-from-int') {
     const code = Math.trunc(v);
     const ch = (code >= 0 && code <= 65535) ? String.fromCharCode(code) : '?';
@@ -1107,6 +1116,7 @@ function runCast() {
   el.textContent = out;
 }
 
+// ─── DEMO 2: OPERATORS ───
 function runOps() {
   const a = parseFloat(document.getElementById('op-a').value);
   const b = parseFloat(document.getElementById('op-b').value);
@@ -1118,9 +1128,9 @@ function runOps() {
     `a + b   = ${ai + bi}`,
     `a - b   = ${ai - bi}`,
     `a * b   = ${ai * bi}`,
-    `a / b   = ${bi !== 0 ? Math.trunc(ai/bi) : 'ArithmeticException (÷ by 0)'}  integer division`,
-    `a % b   = ${bi !== 0 ? ((ai % bi + bi) % bi) : 'ArithmeticException'}  remainder`,
-    `(double)a / b = ${bi !== 0 ? (ai/bi).toFixed(4).replace(/\.?0+$/,'') : 'error'}  decimal division`,
+    `a / b   = ${bi !== 0 ? Math.trunc(ai/bi) : 'ArithmeticException (÷ by 0)'}  ← integer division`,
+    `a % b   = ${bi !== 0 ? ((ai % bi + bi) % bi) : 'ArithmeticException'}  ← remainder`,
+    `(double)a / b = ${bi !== 0 ? (ai/bi).toFixed(4).replace(/\.?0+$/,'') : 'error'}  ← decimal division`,
     ``,
     `// Comparison`,
     `a == b  = ${ai === bi}`,
@@ -1135,6 +1145,7 @@ function runOps() {
   el.textContent = lines.join('\n');
 }
 
+// ─── HINTS ───
 function toggleHint(id) {
   const box = document.getElementById(id);
   const btn = box.previousElementSibling;
@@ -1143,26 +1154,9 @@ function toggleHint(id) {
   btn.textContent = visible ? 'Show hint' : 'Hide hint';
 }
 
+// ─── QUIZ ───
 function qa(btn, correct) {
   const item = btn.closest('.q-item');
-  if (item.querySelector('.q-opt[disabled]')) return;
-  item.querySelectorAll('.q-opt').forEach(b => b.disabled = true);
-  const fb = item.querySelector('.q-fb');
-  if (correct) {
-    btn.classList.add('correct');
-    fb.textContent = '✓ Correct!'; fb.style.color = '#34d399';
-  } else {
-    btn.classList.add('wrong');
-    item.querySelectorAll('.q-opt').forEach(b => {
-      if (b.onclick.toString().includes('true')) b.classList.add('correct');
-    });
-    fb.textContent = '✗ Not quite — correct answer highlighted.'; fb.style.color = '#f87171';
-  }
-}
-</script>
-</body>
-</html>
-closest('.q-item');
   if (item.querySelector('.q-opt[disabled]')) return;
   item.querySelectorAll('.q-opt').forEach(b => b.disabled = true);
   const fb = item.querySelector('.q-fb');

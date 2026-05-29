@@ -1074,7 +1074,11 @@ function wrapIfNeeded(code) {
   if (m) {
     const orig = m[1];
     if (orig !== 'Main') {
-      return code.replace(new RegExp('\\b' + orig + '\\b', 'g'), 'Main');
+      // Only rename the class declaration keyword, NOT occurrences in strings/comments
+      let fixed = code.replace(/(\bpublic\s+class\s+)\w+/, '$1Main');
+      // Also rename constructor calls like "new Hello(" → "new Main("
+      fixed = fixed.replace(new RegExp('(\\bnew\\s+)' + orig + '(\\s*\\()', 'g'), '$1Main$2');
+      return fixed;
     }
     return code;
   }

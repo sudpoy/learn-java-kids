@@ -33,6 +33,35 @@
       <li><strong style="color:#cbd5e1">Compile</strong> — <code class="il">javac</code> turns your <code class="il">.java</code> file into <code class="il">.class</code> bytecode (not machine code — something in between)</li>
       <li><strong style="color:#cbd5e1">Run</strong> — the JVM reads that bytecode and translates it for whatever machine you're on</li>
     </ul>
+
+    <!-- JVM flow diagram -->
+    <div style="display:flex;align-items:center;gap:0;margin:18px 0;flex-wrap:wrap;gap:4px;">
+      <div style="background:#1a1d2e;border:1px solid #4f46e5;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
+        <div style="font-size:.7rem;color:#6b7280;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase;">You write</div>
+        <div style="font-size:.9rem;font-weight:700;color:#a5b4fc;font-family:'Fira Code',monospace;">Hello.java</div>
+      </div>
+      <div style="color:#4f46e5;font-size:1.4rem;padding:0 6px;font-weight:300;">→</div>
+      <div style="background:#1a1d2e;border:1px solid #1e2235;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
+        <div style="font-size:.7rem;color:#6b7280;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase;">Compiler</div>
+        <div style="font-size:.9rem;font-weight:700;color:#e2e8f0;font-family:'Fira Code',monospace;">javac</div>
+      </div>
+      <div style="color:#4f46e5;font-size:1.4rem;padding:0 6px;font-weight:300;">→</div>
+      <div style="background:#1a1d2e;border:1px solid #1e2235;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
+        <div style="font-size:.7rem;color:#6b7280;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase;">Bytecode</div>
+        <div style="font-size:.9rem;font-weight:700;color:#a5b4fc;font-family:'Fira Code',monospace;">Hello.class</div>
+      </div>
+      <div style="color:#4f46e5;font-size:1.4rem;padding:0 6px;font-weight:300;">→</div>
+      <div style="background:#1a1d2e;border:1px solid #1e2235;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
+        <div style="font-size:.7rem;color:#6b7280;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase;">Runs on</div>
+        <div style="font-size:.9rem;font-weight:700;color:#e2e8f0;">JVM</div>
+      </div>
+      <div style="color:#4f46e5;font-size:1.4rem;padding:0 6px;font-weight:300;">→</div>
+      <div style="background:#1a1d2e;border:1px solid #10b981;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
+        <div style="font-size:.7rem;color:#6b7280;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase;">Result</div>
+        <div style="font-size:.9rem;font-weight:700;color:#34d399;">Output ✓</div>
+      </div>
+    </div>
+
     <div class="callout info">
       <div class="callout-title">💡 Why this matters</div>
       <p>The same <code>.class</code> file runs on Windows, Mac, Linux, Android — without recompiling. That's why Java powers Android apps, Minecraft, and millions of enterprise servers simultaneously.</p>
@@ -48,9 +77,19 @@
     }
 }</code></pre>
 
+    <h3 class="topic">What does <code>public static void main</code> actually mean?</h3>
+    <table class="data-table" style="margin-top:8px;">
+      <tr><th>Keyword</th><th>What it means</th></tr>
+      <tr><td><code>public</code></td><td>Anyone (including Java itself) can call this method</td></tr>
+      <tr class="hl"><td><code>static</code></td><td>Belongs directly to the program itself — it can run immediately without needing to build any complex parts first</td></tr>
+      <tr><td><code>void</code></td><td>This method doesn't return a value when it finishes</td></tr>
+      <tr class="hl"><td><code>main</code></td><td>The special name Java looks for as the starting point of every program</td></tr>
+      <tr><td><code>String[] args</code></td><td>A way to pass extra info when launching the program — ignore this for now</td></tr>
+    </table>
+
     <div class="callout">
       <div class="callout-title">⚠️ Common mistake</div>
-      <p>The class name (<code>Hello</code>) must exactly match the filename (<code>Hello.java</code>) — case matters. This trips up everyone at first.</p>
+      <p>The <code>public class</code> name (<code>Hello</code>) must exactly match the filename (<code>Hello.java</code>) — including capitalisation. This trips up everyone at first.</p>
     </div>
   </div>
 
@@ -74,9 +113,14 @@
     </table>
     <p style="font-size:12px;color:#6b7280;margin-top:6px;">* Conceptually 1 bit of information, but the JVM stores a standalone <code>boolean</code> as a 32-bit <code>int</code> internally; in a <code>boolean[]</code> array each element uses 1 byte.</p>
 
+    <div class="callout">
+      <div class="callout-title">⚠️ Quotes matter!</div>
+      <p>In Java, <strong>single characters</strong> use single quotes: <code>'A'</code>. <strong>Words and sentences</strong> (Strings) must use double quotes: <code>"Hello"</code>. Writing <code>System.out.println('Hello')</code> will throw a compiler error — Java only allows one character inside single quotes.</p>
+    </div>
+
     <div class="callout info">
-      <div class="callout-title">💡 String is NOT a primitive</div>
-      <p><code>String</code> is a capital-S class (an object), not a primitive. It gets special treatment in Java — you can declare it like a primitive, but it has methods and behaves differently.</p>
+      <div class="callout-title">💡 String is not a primitive</div>
+      <p><code>String</code> is capitalised because it's a <em>complex type</em> — essentially a chain of <code>char</code> characters joined together. That's why it gets special abilities like <code>.length()</code> and <code>.toUpperCase()</code> that simple primitives don't have. For now, just remember: always use double quotes with <code>String</code>.</p>
     </div>
   </div>
 

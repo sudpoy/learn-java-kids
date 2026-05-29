@@ -68,6 +68,7 @@
     </div>
 
     <h3 class="topic">Your First Java Program</h3>
+    <p class="body">Every Java program lives inside a <strong>class</strong>, and execution always starts from a method called <code class="il">main</code>. The example below is the simplest complete program you can write — it prints three lines to the console using three different print methods.</p>
     <div class="code-label">Hello.java</div>
     <pre><code class="language-java">public class Hello {                          // class name must match filename
     public static void main(String[] args) {  // entry point — Java starts here
@@ -96,6 +97,8 @@
   <!-- ── 1.2 PRIMITIVE TYPES ── -->
   <div class="content-section">
     <div class="section-label">Part 2 — The 8 Primitive Types</div>
+
+    <p class="body">Every value in Java has a <strong>type</strong> that tells the computer exactly what kind of data it is and how much memory to reserve for it. Java has 8 built-in <em>primitive types</em> — simple, raw values that aren't objects. Choosing the right type matters: storing a whole number as a <code class="il">double</code> wastes memory; storing a huge number in an <code class="il">int</code> can silently overflow. The table below is your cheat sheet — you'll use <code class="il">int</code>, <code class="il">double</code>, <code class="il">boolean</code>, and <code class="il">char</code> in almost every program you write.</p>
 
     <h3 class="topic">Java's Type System</h3>
     <p class="body">Java is <strong>statically typed</strong> — every variable must declare its type and it never changes. This catches mistakes at compile time before your code even runs.</p>
@@ -127,6 +130,8 @@
   <!-- ── 1.3 VARIABLES ── -->
   <div class="content-section">
     <div class="section-label">Part 3 — Variables &amp; Constants</div>
+
+    <p class="body">A variable is a <strong>named box</strong> that holds a value. You give it a type (so Java knows what kind of data it stores), a name (so you can refer to it later), and a value. Once created, you can read from it, change what's inside, or use it in calculations. A <strong>constant</strong> (<code class="il">final</code>) is the same idea, except the value is locked — Java will refuse to let you change it after the first assignment, which protects important values like tax rates or gravity from accidental modification.</p>
 
     <h3 class="topic">Declaring and Assigning Variables</h3>
     <pre><code class="language-java">// Declaration + assignment in one line (most common)
@@ -161,7 +166,10 @@ var count = 42;           // Java infers: int</code></pre>
   <div class="content-section">
     <div class="section-label">Part 4 — Operators</div>
 
+    <p class="body">Operators are the symbols that <strong>do things with values</strong>. Java's operators fall into four groups covered here: <em>arithmetic</em> (maths), <em>comparison</em> (is this bigger than that?), <em>logical</em> (combining true/false conditions), and <em>string concatenation</em> (joining text). Two traps catch almost every beginner — integer division silently drops the decimal, and mixing <code class="il">+</code> with strings produces "105" instead of "15" — so pay close attention to those examples.</p>
+
     <h3 class="topic">Arithmetic Operators</h3>
+    <p class="body">Java supports the standard five arithmetic operations. The one that surprises everyone is <strong>integer division</strong>: when both operands are <code class="il">int</code>, the decimal part is thrown away, not rounded.</p>
     <pre><code class="language-java">int a = 17, b = 5;
 
 System.out.println(a + b);   // 22  addition
@@ -192,6 +200,7 @@ System.out.println(y++);  // prints 5, THEN increments → y is now 6
 System.out.println(++y);  // y was 6; increments FIRST → y is now 7, prints 7</code></pre>
 
     <h3 class="topic">Comparison &amp; Logical Operators</h3>
+    <p class="body">Comparison operators answer a yes/no question and always return a <code class="il">boolean</code> (<code class="il">true</code> or <code class="il">false</code>). Logical operators combine those booleans — useful for checking multiple conditions at once, like "is the player alive AND is their score above 100?"</p>
     <pre><code class="language-java">// Comparison — always produces boolean
 System.out.println(5 == 5);   // true   equal to
 System.out.println(5 != 3);   // true   not equal
@@ -212,6 +221,7 @@ int x = 0;
 boolean r = (x != 0) && (10 / x > 1);  // safe — never divides by 0</code></pre>
 
     <h3 class="topic">String Concatenation Trap</h3>
+    <p class="body">The <code class="il">+</code> operator does double duty in Java: with numbers it adds, but with a <code class="il">String</code> it <em>joins</em> (concatenates). The trouble is that Java reads <code class="il">+</code> <strong>left to right</strong>, so whether it adds or joins depends on what comes first.</p>
     <pre><code class="language-java">// + with Strings: everything to its right becomes text
 System.out.println("Score: " + 10 + 5);   // "Score: 105"  ← NOT 15!
 System.out.println("Score: " + (10 + 5)); // "Score: 15"   ← correct
@@ -232,6 +242,8 @@ System.out.println("Char: " + 'A');    // "Char: A"</code></pre>
   <!-- ── 1.5 TYPE CASTING ── -->
   <div class="content-section">
     <div class="section-label">Part 5 — Type Casting</div>
+
+    <p class="body">Sometimes you need to treat a value as a different type — for example, dividing two integers but wanting a decimal result, or turning a character into its number code. <strong>Type casting</strong> is Java's way of explicitly converting from one type to another. It's a skill you'll use constantly once you start doing real maths, working with characters, or calling methods that return a different type than you need.</p>
 
     <h3 class="topic">Widening vs Narrowing Conversion</h3>
     <p class="body">

@@ -1,7 +1,7 @@
 // ─── LESSON DATA ───
 const lessons = [
   {num:1,  title:'Java Foundations',            sub:'JVM · types · operators · casting',       color:'#4f46e5', live:true},
-  {num:2,  title:'Control Flow',                sub:'if · switch · ternary · booleans',         color:'#8b5cf6', live:false},
+  {num:2,  title:'Control Flow',                sub:'if · switch · ternary · booleans',         color:'#8b5cf6', live:true},
   {num:3,  title:'Loops',                       sub:'for · while · do-while · break/continue',  color:'#06b6d4', live:false},
   {num:4,  title:'Arrays',                      sub:'1D · 2D · algorithms · Arrays API',        color:'#10b981', live:false},
   {num:5,  title:'Methods',                     sub:'parameters · overloading · scope',          color:'#f59e0b', live:false},

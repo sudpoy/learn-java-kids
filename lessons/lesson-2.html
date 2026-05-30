@@ -1,15 +1,376 @@
 <div class="lesson-header">
   <div class="lesson-badge"><span class="dot" style="background:#8b5cf6"></span>Week 2 of 10</div>
   <h2>Control Flow</h2>
-  <p class="desc">if / else if / else, switch/case with fall-through, the ternary operator, compound booleans, and short-circuit evaluation.</p>
+  <p class="desc">Make your programs smart — learn how to branch with if/else, match with switch, condense with the ternary operator, and safely combine conditions with short-circuit evaluation.</p>
   <div class="lesson-stats">
-    <div class="stat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Lecture: <strong>~40 min</strong></span></div>
-    <div class="stat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Exercise: <strong>~15 min</strong></span></div>
+    <div class="stat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Lecture: <strong>~40 min</strong></span>
+    </div>
+    <div class="stat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span>Exercise: <strong>~15 min</strong></span>
+    </div>
+    <div class="stat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Topics: <strong>if/else · switch · ternary · &&/|| · short-circuit</strong></span>
+    </div>
   </div>
 </div>
-<div class="coming-soon">
-  <div class="cs-num">02</div>
-  <h3>Coming Soon</h3>
-  <p>if / else if / else, switch/case with fall-through, the ternary operator, compound booleans, and short-circuit evaluation.</p>
-  <div class="cs-topics"><span class="cs-topic">if / else if / else</span><span class="cs-topic">switch / case</span><span class="cs-topic">Ternary operator</span><span class="cs-topic">&amp;&amp; </span><span class="cs-topic"></span><span class="cs-topic"> !</span><span class="cs-topic">Short-circuit eval</span></div>
-</div>
+
+<div class="lesson-content">
+
+  <!-- ── 2.1 IF / ELSE ── -->
+  <div class="content-section">
+    <div class="section-label">Part 1 — if / else if / else</div>
+
+    <p class="body">Without control flow, every program does exactly the same thing every time — not very useful. The <code class="il">if</code> statement is Java's most fundamental decision-maker: it evaluates a boolean condition, and if it's <code class="il">true</code>, the block inside the curly braces runs; if it's <code class="il">false</code>, it's skipped entirely. Chain <code class="il">else if</code> branches to check additional conditions, and add a final <code class="il">else</code> to catch everything that didn't match.</p>
+
+    <h3 class="topic">Basic Structure</h3>
+    <p class="body">The condition inside the parentheses must be a boolean expression — any comparison, logical operation, or boolean variable.</p>
+    <pre><code class="language-java">int score = 72;
+
+if (score >= 90) {
+    System.out.println("A — Excellent!");
+} else if (score >= 80) {
+    System.out.println("B — Good job!");
+} else if (score >= 70) {
+    System.out.println("C — Passing");
+} else if (score >= 60) {
+    System.out.println("D — Needs improvement");
+} else {
+    System.out.println("F — Please see your teacher");
+}</code></pre>
+
+    <div class="callout info">
+      <div class="callout-title">💡 How Java evaluates the chain</div>
+      <p>Java tests conditions <strong>top to bottom</strong> and stops at the first <code>true</code> one. Since we check <code>score >= 90</code> first, a score of 95 only prints the "A" message — it never reaches the <code>>= 80</code> check. Order matters.</p>
+    </div>
+
+    <h3 class="topic">Conditions Can Be Any Boolean Expression</h3>
+    <p class="body">Your condition can be as simple as a single variable or as complex as you need. Here are common patterns you'll use constantly:</p>
+    <pre><code class="language-java">int age = 15;
+boolean hasTicket = true;
+String weather = "sunny";
+
+// Single boolean variable
+if (hasTicket) {
+    System.out.println("Welcome!");
+}
+
+// Combining conditions with && and ||
+if (age >= 13 && age <= 17) {
+    System.out.println("You're a teenager");
+}
+
+if (weather.equals("sunny") || weather.equals("cloudy")) {
+    System.out.println("Good day for a walk");
+}
+
+// Negation with !
+if (!hasTicket) {
+    System.out.println("You need a ticket to enter");
+}</code></pre>
+
+    <div class="callout">
+      <div class="callout-title">⚠️ Always use curly braces</div>
+      <p>Java allows you to skip <code>{ }</code> if the body is a single line, but this is a trap. Adding a second line later makes it look like it's inside the <code>if</code> block when it isn't. Always use curly braces — every professional Java codebase does.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">⚠️ == vs .equals() for Strings</div>
+      <p>Use <code>==</code> to compare numbers and booleans. For Strings, always use <code>.equals()</code>. Writing <code>if (name == "Alex")</code> might not work as expected — <code>==</code> checks if two String variables point to the same object in memory, not whether they contain the same text.</p>
+    </div>
+  </div>
+
+  <!-- ── 2.2 SWITCH / CASE ── -->
+  <div class="content-section">
+    <div class="section-label">Part 2 — switch / case</div>
+
+    <p class="body">When you're comparing a single variable against many <em>specific</em> exact values, a <code class="il">switch</code> statement is often cleaner than a long chain of <code class="il">if/else if</code>. Think of it like a menu — Java jumps directly to the matching <code class="il">case</code>, runs the code there, and stops when it hits <code class="il">break</code>. A <code class="il">default</code> case catches anything that didn't match, just like a final <code class="il">else</code>.</p>
+
+    <h3 class="topic">Classic switch / case</h3>
+    <p class="body">The <code class="il">switch</code> expression can be an <code class="il">int</code>, <code class="il">char</code>, <code class="il">String</code>, or an <code class="il">enum</code> (no <code class="il">boolean</code>, no <code class="il">double</code>). Each <code class="il">case</code> must end with <code class="il">break</code> — if you forget it, Java keeps running into the next case.</p>
+    <pre><code class="language-java">int day = 3;
+
+switch (day) {
+    case 1:
+        System.out.println("Monday");
+        break;
+    case 2:
+        System.out.println("Tuesday");
+        break;
+    case 3:
+        System.out.println("Wednesday");
+        break;
+    case 4:
+        System.out.println("Thursday");
+        break;
+    case 5:
+        System.out.println("Friday");
+        break;
+    case 6:
+    case 7:
+        System.out.println("Weekend!");   // cases 6 AND 7 both reach this
+        break;
+    default:
+        System.out.println("Invalid day");
+}</code></pre>
+
+    <div class="callout">
+      <div class="callout-title">⚠️ Fall-through: Java's biggest switch surprise</div>
+      <p>If you <strong>forget</strong> <code>break</code>, Java doesn't stop — it "falls through" into the next case and runs that code too, whether it matches or not. This is almost always a bug. The only intentional use is stacking cases that share the same action (like cases 6 and 7 above).</p>
+    </div>
+
+    <h3 class="topic">Seeing Fall-Through in Action</h3>
+    <p class="body">Run this and watch what happens when <code class="il">break</code> is missing — it's one of those things you have to see once to remember forever:</p>
+    <pre><code class="language-java">int x = 1;
+
+switch (x) {
+    case 1:
+        System.out.println("One");
+        // no break — falls through!
+    case 2:
+        System.out.println("Two");
+        // no break — falls through!
+    case 3:
+        System.out.println("Three");
+        break;
+    case 4:
+        System.out.println("Four");
+        break;
+}
+// Output: One  Two  Three  (all three print!)</code></pre>
+
+    <h3 class="topic">Enhanced switch (Java 14+)</h3>
+    <p class="body">Modern Java has a cleaner switch syntax using <code class="il">-&gt;</code> (arrow). No <code class="il">break</code> needed, no fall-through possible, and it can return a value directly. You'll see this style in newer code:</p>
+    <pre><code class="language-java">String day = "MONDAY";
+
+String type = switch (day) {
+    case "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" -> "Weekday";
+    case "SATURDAY", "SUNDAY" -> "Weekend";
+    default -> "Unknown";
+};
+
+System.out.println(type); // Weekday</code></pre>
+
+    <div class="callout info">
+      <div class="callout-title">💡 switch vs if/else — when to use which</div>
+      <p>Use <code>switch</code> when checking one variable against exact values (days, menu options, single characters). Use <code>if/else</code> when you need ranges (<code>&gt;= 90</code>), complex conditions (<code>&&</code>, <code>||</code>), or comparing different variables.</p>
+    </div>
+  </div>
+
+  <!-- ── 2.3 TERNARY OPERATOR ── -->
+  <div class="content-section">
+    <div class="section-label">Part 3 — The Ternary Operator</div>
+
+    <p class="body">Sometimes a full <code class="il">if/else</code> block feels like a lot of code just to pick between two values. The <strong>ternary operator</strong> is a compact one-line alternative. Its name comes from the fact that it takes three parts: a condition, a value if true, and a value if false.</p>
+
+    <h3 class="topic">Syntax and Usage</h3>
+    <p class="body">The format is: <code class="il">condition ? valueIfTrue : valueIfFalse</code>. The whole expression evaluates to one of the two values, so you can assign it directly to a variable or use it inside <code class="il">System.out.println</code>.</p>
+    <pre><code class="language-java">int age = 16;
+
+// Ternary — one line
+String status = age >= 18 ? "Adult" : "Minor";
+System.out.println(status);  // Minor
+
+// Equivalent if/else — four lines
+String status2;
+if (age >= 18) {
+    status2 = "Adult";
+} else {
+    status2 = "Minor";
+}
+
+// Ternary directly inside a print
+int score = 85;
+System.out.println("Result: " + (score >= 60 ? "Pass" : "Fail"));
+
+// Ternary with maths
+int a = 7, b = 12;
+int max = a > b ? a : b;
+System.out.println("Max: " + max);  // 12</code></pre>
+
+    <div class="callout">
+      <div class="callout-title">⚠️ Don't nest ternaries</div>
+      <p>You <em>can</em> nest one ternary inside another, but it quickly becomes unreadable. As a rule: if your ternary doesn't fit on one clean line, use <code>if/else</code> instead. Code is read far more often than it's written — clarity wins.</p>
+    </div>
+  </div>
+
+  <!-- ── 2.4 SHORT-CIRCUIT EVALUATION ── -->
+  <div class="content-section">
+    <div class="section-label">Part 4 — Short-Circuit Evaluation</div>
+
+    <p class="body">You already know <code class="il">&amp;&amp;</code> (AND) and <code class="il">||</code> (OR) from Lesson 1. There's a deeper behaviour worth understanding: Java is <em>lazy</em> about evaluating them. The moment it knows the final answer, it stops and doesn't evaluate the rest. This is called <strong>short-circuit evaluation</strong>, and it's not just an optimisation — it prevents real errors.</p>
+
+    <h3 class="topic">How Short-Circuit Works</h3>
+    <p class="body">With <code class="il">&amp;&amp;</code>: if the <em>left side is false</em>, the whole expression is false no matter what, so Java skips the right side. With <code class="il">||</code>: if the <em>left side is true</em>, the whole expression is true, so Java skips the right side.</p>
+    <pre><code class="language-java">// && short-circuit: stops if left side is false
+int x = 0;
+if (x != 0 && 10 / x > 2) {       // 10/x would crash if x is 0
+    System.out.println("Big");     // this line is safe — x != 0 is false,
+}                                  // so Java never evaluates 10 / x
+
+// || short-circuit: stops if left side is true
+boolean isAdmin = true;
+if (isAdmin || checkDatabasePermission()) {  // checkDatabasePermission() is
+    System.out.println("Access granted");    // never called — isAdmin is true
+}
+
+// Practical example: null safety
+String name = null;
+if (name != null && name.length() > 0) {
+    System.out.println("Name: " + name);   // safe — null check fires first
+}
+// Without short-circuit, name.length() on null would throw NullPointerException</code></pre>
+
+    <div class="callout info">
+      <div class="callout-title">💡 The golden rule for null safety</div>
+      <p>Always put the <code>null</code> check <strong>first</strong> with <code>&amp;&amp;</code>. <code>name != null &amp;&amp; name.length() &gt; 0</code> is safe. Flipping the order to <code>name.length() &gt; 0 &amp;&amp; name != null</code> will crash with a <code>NullPointerException</code> because Java evaluates left-to-right and tries <code>name.length()</code> before discovering <code>name</code> is null.</p>
+    </div>
+
+    <h3 class="topic">De Morgan's Laws</h3>
+    <p class="body">Two rules that help you simplify or rewrite complex boolean conditions. You'll use these when debugging or refactoring conditions:</p>
+    <pre><code class="language-java">// De Morgan's Laws — these pairs are equivalent:
+
+// NOT (A AND B)  ==  (NOT A) OR  (NOT B)
+!(a && b)  ==  (!a || !b)
+
+// NOT (A OR  B)  ==  (NOT A) AND (NOT B)
+!(a || b)  ==  (!a && !b)
+
+// Real example — "not a teenager":
+int age = 25;
+if (!(age >= 13 && age <= 17)) {
+    System.out.println("Not a teenager");
+}
+// Equivalent (De Morgan applied):
+if (age < 13 || age > 17) {
+    System.out.println("Not a teenager");
+}
+// The second form is usually clearer to read</code></pre>
+
+    <!-- Interactive Demo: Grade Calculator -->
+    <div class="demo-wrap" style="margin-top:24px;">
+      <div class="demo-header">
+        <div class="demo-dot" style="background:#ef4444"></div>
+        <div class="demo-dot" style="background:#f59e0b;margin-left:4px"></div>
+        <div class="demo-dot" style="background:#10b981;margin-left:4px"></div>
+        <span class="label" style="margin-left:8px">Interactive — Grade Calculator</span>
+      </div>
+      <div class="demo-body">
+        <p>Enter a score and see exactly which if/else branch fires — useful for tracing your own grade logic.</p>
+        <div class="form-row">
+          <label>Score (0–100):</label>
+          <input class="demo-input" id="grade-score" type="number" value="85" min="0" max="100" style="width:80px"/>
+          <button class="run-btn" onclick="runGrade()">Check ▶</button>
+        </div>
+        <div class="demo-result" id="grade-result">Click Check to see the result...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE ── -->
+  <div class="content-section">
+    <div class="section-label">Exercise — 15 Minutes</div>
+    <div class="exercise-header">
+      <span class="ex-icon">⌨️</span>
+      <span class="ex-label">Coding Challenge</span>
+      <span class="ex-time">⏱ ~15 min</span>
+    </div>
+    <div class="exercise-section">
+
+      <div class="exercise-task">
+        <p><strong>Task 1 — FizzBuzz</strong><br/>
+        The classic programmer interview puzzle. Write a program that checks a single integer. If it's divisible by 3, print <code>"Fizz"</code>. If divisible by 5, print <code>"Buzz"</code>. If divisible by both 3 and 5, print <code>"FizzBuzz"</code>. Otherwise, print the number itself. Test with: 15, 9, 10, 7.</p>
+        <p style="font-size:.82rem;color:#6b7280;margin-top:6px;"><em>Hint: check divisibility with the modulo operator — <code>n % 3 == 0</code> is true when n is divisible by 3.</em></p>
+      </div>
+      <button class="hint-toggle" onclick="toggleHint('h2-1')">Show hint</button>
+      <div class="hint-box" id="h2-1">
+        <p>The order of your conditions matters. Check <code>n % 3 == 0 &amp;&amp; n % 5 == 0</code> (both) <strong>first</strong>, then check each separately. If you check "divisible by 3" first, a number like 15 will print "Fizz" and never reach the "FizzBuzz" check.</p>
+      </div>
+
+      <div class="exercise-task" style="margin-top:16px">
+        <p><strong>Task 2 — Season Finder</strong><br/>
+        Write a program using a <code>switch</code> statement that takes a month number (1–12) and prints the season. Use: Dec/Jan/Feb → Winter, Mar/Apr/May → Spring, Jun/Jul/Aug → Summer, Sep/Oct/Nov → Autumn. Test with months 1, 4, 8, 11. What happens if you enter 13?</p>
+      </div>
+      <button class="hint-toggle" onclick="toggleHint('h2-2')">Show hint</button>
+      <div class="hint-box" id="h2-2">
+        <p>Stack multiple cases that share the same result: <code>case 12: case 1: case 2: System.out.println("Winter"); break;</code>. Add a <code>default</code> case to handle invalid inputs like 13.</p>
+      </div>
+
+      <div class="exercise-task" style="margin-top:16px">
+        <p><strong>Task 3 — Leap Year Checker</strong><br/>
+        A year is a leap year if: it is divisible by 4 AND (not divisible by 100 OR divisible by 400). Write a program that checks a year. Test with: 2000 (leap), 1900 (not leap), 2024 (leap), 2023 (not leap). Try writing the condition as a single <code>if</code> expression, then verify with a ternary.</p>
+      </div>
+      <button class="hint-toggle" onclick="toggleHint('h2-3')">Show hint</button>
+      <div class="hint-box" id="h2-3">
+        <p>The condition in Java: <code>year % 4 == 0 &amp;&amp; (year % 100 != 0 || year % 400 == 0)</code>. Parentheses are essential here because <code>&amp;&amp;</code> has higher precedence than <code>||</code>. Without them, the logic is wrong.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── QUIZ ── -->
+  <div class="content-section quiz-section">
+    <div class="section-label">Quick Check — 5 Questions</div>
+    <div class="q-list">
+
+      <div class="q-item">
+        <h4>1. What keyword prevents fall-through in a <code class="il">switch</code> statement?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)"><code>stop</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>return</code></button>
+          <button class="q-opt" onclick="qa(this,true)"><code>break</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>exit</code></button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>2. What does <code class="il">int x = -3; String r = x &gt; 0 ? "positive" : "negative";</code> assign to <code class="il">r</code>?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)"><code>"positive"</code></button>
+          <button class="q-opt" onclick="qa(this,true)"><code>"negative"</code></button>
+          <button class="q-opt" onclick="qa(this,false)">Compile error — can't assign ternary to String</button>
+          <button class="q-opt" onclick="qa(this,false)"><code>null</code></button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>3. Which of these is the safest null check?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)"><code>if (name.length() &gt; 0 &amp;&amp; name != null)</code></button>
+          <button class="q-opt" onclick="qa(this,true)"><code>if (name != null &amp;&amp; name.length() &gt; 0)</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>if (name.equals(null))</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>if (name != "")</code></button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>4. Which condition correctly checks if <code class="il">n</code> is between 1 and 10 inclusive?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)"><code>n &gt; 1 &amp;&amp; n &lt; 10</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>1 &lt; n &lt; 10</code></button>
+          <button class="q-opt" onclick="qa(this,true)"><code>n &gt;= 1 &amp;&amp; n &lt;= 10</code></button>
+          <button class="q-opt" onclick="qa(this,false)"><code>n &gt;= 1 || n &lt;= 10</code></button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+      <div class="q-item">
+        <h4>5. A score of 85 is checked in this order: <code class="il">&gt;=90 → "A"</code>, <code class="il">&gt;=80 → "B"</code>, <code class="il">&gt;=70 → "C"</code>, <code class="il">else → "F"</code>. What prints?</h4>
+        <div class="q-opts">
+          <button class="q-opt" onclick="qa(this,false)">A</button>
+          <button class="q-opt" onclick="qa(this,true)">B</button>
+          <button class="q-opt" onclick="qa(this,false)">C and B (both conditions are true)</button>
+          <button class="q-opt" onclick="qa(this,false)">F</button>
+        </div>
+        <div class="q-fb"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /lesson-content -->

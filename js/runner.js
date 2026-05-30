@@ -1,5 +1,20 @@
 // ─── EXECUTE VIA JUDGE0 CE API ───
 // Free public API, no auth required. language_id 62 = Java (OpenJDK 13)
+// Using base64_encoded=true so that Unicode characters in source code (em dashes,
+// arrows, etc.) are transmitted safely without triggering UTF-8 conversion errors.
+
+function b64encode(str) {
+  // Encode a Unicode string to base64, handling multi-byte characters correctly.
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+function b64decode(str) {
+  // Decode a base64 string from Judge0, handling multi-byte characters correctly.
+  if (!str) return '';
+  try { return decodeURIComponent(escape(atob(str))); }
+  catch(e) { return atob(str); }
+}
+
 async function executeCode(code, outputEl, statusEl, btn) {
   const runnable = wrapIfNeeded(code);
   btn.disabled = true;
@@ -9,11 +24,11 @@ async function executeCode(code, outputEl, statusEl, btn) {
   outputEl.className = 'cm-output';
 
   try {
-    const res = await fetch('https://ce.judge0.com/submissions?base64_encoded=false&wait=true', {
+    const res = await fetch('https://ce.judge0.com/submissions?base64_encoded=true&wait=true', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        source_code: runnable,
+        source_code: b64encode(runnable),
         language_id: 62,
         stdin: ''
       })
@@ -26,19 +41,19 @@ async function executeCode(code, outputEl, statusEl, btn) {
     const sid = data.status && data.status.id;
 
     if (sid === 6) {
-      // Compilation Error
-      out = (data.compile_output || 'Compilation error')
+      // Compilation Error — response fields are also base64 encoded
+      out = (b64decode(data.compile_output) || 'Compilation error')
               .replace(/\/[^\s]*Main\.java:/g, 'Main.java:');
       isErr = true;
     } else if (sid >= 7 && sid <= 12) {
       // Runtime error variants
-      out = data.stderr || data.message || ('Runtime error (status ' + sid + ')');
+      out = b64decode(data.stderr) || data.message || ('Runtime error (status ' + sid + ')');
       isErr = true;
     } else if (sid === 5) {
       out = 'Time limit exceeded';
       isErr = true;
     } else {
-      out = data.stdout || '';
+      out = b64decode(data.stdout) || '';
       if (!out.trim()) out = '(no output)';
     }
 

@@ -143,16 +143,28 @@ switch (x) {
 // Output: One  Two  Three  (all three print!)</code></pre>
 
     <h3 class="topic">Enhanced switch (Java 14+)</h3>
-    <p class="body">Modern Java has a cleaner switch syntax using <code class="il">-&gt;</code> (arrow). No <code class="il">break</code> needed, no fall-through possible, and it can return a value directly. You'll see this style in newer code:</p>
+    <p class="body">Modern Java has a cleaner switch syntax using <code class="il">-&gt;</code> (arrow). No <code class="il">break</code> needed, no fall-through possible, and it can return a value directly. The code below is the classic equivalent — the commented-out block at the bottom shows what the Java 14+ arrow syntax looks like:</p>
     <pre><code class="language-java">String day = "MONDAY";
+String type;
 
-String type = switch (day) {
-    case "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" -> "Weekday";
-    case "SATURDAY", "SUNDAY" -> "Weekend";
-    default -> "Unknown";
-};
+switch (day) {
+    case "MONDAY": case "TUESDAY": case "WEDNESDAY":
+    case "THURSDAY": case "FRIDAY":
+        type = "Weekday"; break;
+    case "SATURDAY": case "SUNDAY":
+        type = "Weekend"; break;
+    default:
+        type = "Unknown";
+}
 
-System.out.println(type); // Weekday</code></pre>
+System.out.println(type); // Weekday
+
+// Java 14+ arrow syntax (not supported in this runner — shown for reference):
+// String type = switch (day) {
+//     case "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" -> "Weekday";
+//     case "SATURDAY", "SUNDAY" -> "Weekend";
+//     default -> "Unknown";
+// };</code></pre>
 
     <div class="callout info">
       <div class="callout-title">💡 switch vs if/else — when to use which</div>

@@ -244,13 +244,15 @@ if (name != null && name.length() > 0) {
 
     <h3 class="topic">De Morgan's Laws</h3>
     <p class="body">Two rules that help you simplify or rewrite complex boolean conditions. You'll use these when debugging or refactoring conditions:</p>
-    <pre><code class="language-java">// De Morgan's Laws — these pairs are equivalent:
+    <pre><code class="language-java">// De Morgan's Laws — these pairs are always equivalent.
+// Prove it by printing both sides — they always produce the same boolean:
+boolean a = true, b = false;
 
 // NOT (A AND B)  ==  (NOT A) OR  (NOT B)
-!(a && b)  ==  (!a || !b)
+System.out.println(!(a && b) == (!a || !b));  // true
 
 // NOT (A OR  B)  ==  (NOT A) AND (NOT B)
-!(a || b)  ==  (!a && !b)
+System.out.println(!(a || b) == (!a && !b));  // true
 
 // Real example — "not a teenager":
 int age = 25;

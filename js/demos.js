@@ -1,3 +1,43 @@
+// ─── LESSON 2 DEMO: GRADE CALCULATOR ───
+function runGrade() {
+  const raw = document.getElementById('grade-score').value;
+  const el  = document.getElementById('grade-result');
+  const score = parseInt(raw, 10);
+
+  if (isNaN(score) || score < 0 || score > 100) {
+    el.textContent = '⚠ Enter a number between 0 and 100.';
+    return;
+  }
+
+  let grade, msg, branch;
+  if (score >= 90) {
+    grade = 'A'; msg = 'Excellent!';
+    branch = 'if (score >= 90)  ✓ FIRES';
+  } else if (score >= 80) {
+    grade = 'B'; msg = 'Good job!';
+    branch = 'else if (score >= 80)  ✓ FIRES';
+  } else if (score >= 70) {
+    grade = 'C'; msg = 'Passing';
+    branch = 'else if (score >= 70)  ✓ FIRES';
+  } else if (score >= 60) {
+    grade = 'D'; msg = 'Needs improvement';
+    branch = 'else if (score >= 60)  ✓ FIRES';
+  } else {
+    grade = 'F'; msg = 'Please see your teacher';
+    branch = 'else  ✓ FIRES  (no condition matched above)';
+  }
+
+  el.textContent =
+    `Score: ${score}\n` +
+    `\nCondition path:\n` +
+    `  if (score >= 90)          ${score >= 90 ? '✓ FIRES → Grade A' : '✗ skip'}\n` +
+    `  else if (score >= 80)     ${score >= 80 && score < 90 ? '✓ FIRES → Grade B' : (score >= 80 ? '(already matched above)' : '✗ skip')}\n` +
+    `  else if (score >= 70)     ${score >= 70 && score < 80 ? '✓ FIRES → Grade C' : (score >= 70 ? '(already matched above)' : '✗ skip')}\n` +
+    `  else if (score >= 60)     ${score >= 60 && score < 70 ? '✓ FIRES → Grade D' : (score >= 60 ? '(already matched above)' : '✗ skip')}\n` +
+    `  else                      ${score < 60 ? '✓ FIRES → Grade F' : '(already matched above)'}\n` +
+    `\nResult: Grade ${grade} — ${msg}`;
+}
+
 // ─── DEMO 1: TYPE CASTING EXPLORER ───
 function runCast() {
   const v = parseFloat(document.getElementById('cast-val').value);

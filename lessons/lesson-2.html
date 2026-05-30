@@ -225,8 +225,9 @@ if (x != 0 && 10 / x > 2) {       // 10/x would crash if x is 0
 
 // || short-circuit: stops if left side is true
 boolean isAdmin = true;
-if (isAdmin || checkDatabasePermission()) {  // checkDatabasePermission() is
-    System.out.println("Access granted");    // never called — isAdmin is true
+boolean dbPermission = false; // imagine this came from a slow database check
+if (isAdmin || dbPermission) {   // dbPermission is never evaluated — isAdmin is true
+    System.out.println("Access granted");
 }
 
 // Practical example: null safety
